@@ -1,8 +1,9 @@
 {
-  "name": "webstay",
-  "productName": "webstay",
+  "name": "webs-tray",
+  "productName": "webs-tray",
   "version": "1.0.0",
   "description": "My Electron application description",
+  "private": true,
   "main": ".vite/build/main.js",
   "scripts": {
     "start": "electron-forge start",
@@ -38,8 +39,7 @@
   },
   "keywords": [],
   "author": {
-    "name": "symant233",
-    "email": "symant233@gmail.com"
+    "name": "symant233"
   },
   "license": "MIT",
   "dependencies": {
