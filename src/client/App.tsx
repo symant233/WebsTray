@@ -1,6 +1,9 @@
+import Frame from './components/Frame';
+
 export default function App() {
   return (
-    <div className="h-screen w-screen bg-zinc-800 grid place-items-center text-7xl text-zinc-300">
+    <div className="h-screen w-screen bg-white flex flex-col border border-solid border-black">
+      <Frame></Frame>
       WebStay
     </div>
   );
