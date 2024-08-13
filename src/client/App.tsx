@@ -1,10 +1,23 @@
 import Frame from './components/Frame';
 import Icon from '@mdi/react';
 import { mdiLink } from '@mdi/js';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
+import Content from './components/Content';
+import TrayContent from './components/TrayContent';
 
 export default function App() {
+  if (location.hash) {
+    return <TrayContent url={location.hash.slice(1)} />;
+  }
+
   const inputRef = useRef<HTMLInputElement>(null);
+  const [value, setValue] = useState('');
+
+  const handleEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && value.startsWith('http')) {
+      window.open(`/#${value}`, '_blank');
+    }
+  };
 
   return (
     <div className="h-screen w-screen bg-white flex flex-col border border-solid border-black">
@@ -21,10 +34,14 @@ export default function App() {
             className="w-full text-sm p-1"
             placeholder="Enter URL to Start"
             ref={inputRef}
+            value={value}
+            onChange={(e) => setValue(e.currentTarget.value)}
+            onKeyUp={handleEnter}
+            spellCheck={false}
           />
         </div>
       </Frame>
-      content
+      <Content />
     </div>
   );
 }

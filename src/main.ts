@@ -28,8 +28,21 @@ const createWindow = () => {
     );
   }
 
-  // Open the DevTools.
-  // mainWindow.webContents.openDevTools();
+  // override window.open options
+  mainWindow.webContents.setWindowOpenHandler(() => {
+    return {
+      action: 'allow',
+      overrideBrowserWindowOptions: {
+        width: 500,
+        height: 780,
+        frame: false,
+        fullscreenable: false,
+        webPreferences: {
+          preload: path.join(__dirname, 'preload.js'),
+        },
+      },
+    };
+  });
 
   ipcMain.on('minimize-window', () => {
     mainWindow.minimize();
