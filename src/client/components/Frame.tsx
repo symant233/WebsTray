@@ -1,6 +1,7 @@
 import { memo } from 'react';
 import Icon from '@mdi/react';
-import { mdiWindowClose, mdiMinus } from '@mdi/js';
+import { mdiMinus } from '@mdi/js';
+import CloseButton from './common/CloseButton';
 
 type Props = {
   children: React.ReactNode;
@@ -21,12 +22,7 @@ const Frame = ({ children }: Props) => {
         >
           <Icon path={mdiMinus} size={'1rem'} horizontal vertical />
         </div>
-        <div
-          className="hover:bg-gray-200 p-1 rounded active:bg-gray-300"
-          onClick={() => window.close()}
-        >
-          <Icon path={mdiWindowClose} size={'1rem'} horizontal vertical />
-        </div>
+        <CloseButton />
       </div>
     </div>
   );

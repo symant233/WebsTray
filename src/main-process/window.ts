@@ -17,17 +17,23 @@ const _loadApp = async (window: BrowserWindow, url = '') => {
   }
 };
 
+const options: Electron.BrowserWindowConstructorOptions = {
+  webPreferences: {
+    preload: path.join(__dirname, 'preload.js'),
+  },
+  icon,
+  autoHideMenuBar: true,
+  frame: false,
+  maximizable: false,
+  fullscreenable: false,
+};
+
 const createWindow = async (): Promise<BrowserWindow> => {
   const mainWindow = new BrowserWindow({
     width: 600,
     height: 680,
-    webPreferences: {
-      preload: path.join(__dirname, 'preload.js'),
-    },
-    autoHideMenuBar: true,
-    frame: false,
-    maximizable: false,
-    icon,
+
+    ...options,
   });
 
   await _loadApp(mainWindow);
@@ -37,22 +43,23 @@ const createWindow = async (): Promise<BrowserWindow> => {
 const createTrayWindow = async (
   url: string,
 ): Promise<[BrowserWindow, Tray]> => {
+  const [winWidth, winHeight] = [500, 780];
+
   const tray = new Tray(icon);
+  const { x, y, width, height } = tray.getBounds();
   const trayWindow = new BrowserWindow({
-    width: 500,
-    height: 780,
-    autoHideMenuBar: true,
-    frame: false,
-    fullscreenable: false,
-    maximizable: false,
-    webPreferences: {
-      preload: path.join(__dirname, 'preload.js'),
-    },
+    width: winWidth,
+    height: winHeight,
     transparent: true,
     hiddenInMissionControl: true,
     // show: false,
-    icon,
+    ...options,
   });
+  trayWindow.setPosition(
+    Math.floor(x - winWidth / 2 + width / 2),
+    Math.floor(y - winHeight - height / 2),
+  );
+
   await _loadApp(trayWindow, url);
   trayWindow.once('closed', () => {
     tray.destroy();
@@ -66,6 +73,9 @@ const createTrayWindow = async (
   tray.on('right-click', () => {
     trayWindow.close();
     tray.destroy();
+  });
+  trayWindow.on('blur', () => {
+    if (!trayWindow.isAlwaysOnTop()) trayWindow.hide();
   });
   return [trayWindow, tray];
 };

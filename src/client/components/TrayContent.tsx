@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import CloseButton from './common/CloseButton';
 
 type Props = {
   url: string;
@@ -29,13 +30,7 @@ export default function TrayContent({ url }: Props) {
           <span className="w-64">
             {iframeRef.current?.contentDocument?.title || url}
           </span>
-          <div
-            onClick={() => {
-              window.close();
-            }}
-          >
-            close
-          </div>
+          <CloseButton />
         </div>
       </div>
     </div>
