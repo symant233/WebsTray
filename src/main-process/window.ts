@@ -38,7 +38,6 @@ const createTrayWindow = async (
   url: string,
 ): Promise<[BrowserWindow, Tray]> => {
   const tray = new Tray(icon);
-
   const trayWindow = new BrowserWindow({
     width: 500,
     height: 780,
@@ -51,12 +50,22 @@ const createTrayWindow = async (
     },
     transparent: true,
     hiddenInMissionControl: true,
-    show: false,
+    // show: false,
     icon,
   });
   await _loadApp(trayWindow, url);
-  trayWindow.once('ready-to-show', () => {
-    trayWindow.show();
+  trayWindow.once('closed', () => {
+    tray.destroy();
+  });
+  // trayWindow.once('ready-to-show', () => {
+  //   trayWindow.show();
+  // });
+  tray.on('click', () => {
+    trayWindow.isVisible() ? trayWindow.hide() : trayWindow.show();
+  });
+  tray.on('right-click', () => {
+    trayWindow.close();
+    tray.destroy();
   });
   return [trayWindow, tray];
 };
