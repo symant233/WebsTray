@@ -29,31 +29,68 @@ const createWindow = () => {
   }
 
   // override window.open options
-  mainWindow.webContents.setWindowOpenHandler(() => {
-    return {
-      action: 'allow',
-      overrideBrowserWindowOptions: {
-        width: 500,
-        height: 780,
-        frame: false,
-        fullscreenable: false,
-        webPreferences: {
-          preload: path.join(__dirname, 'preload.js'),
-        },
-        transparent: true,
-      },
-    };
-  });
+  // mainWindow.webContents.setWindowOpenHandler(() => {
+  //   return {
+  //     action: 'allow',
+  //     overrideBrowserWindowOptions: {
+  //       width: 500,
+  //       height: 780,
+  //       frame: false,
+  //       fullscreenable: false,
+  //       webPreferences: {
+  //         preload: path.join(__dirname, 'preload.js'),
+  //       },
+  //       transparent: true,
+  //     },
+  //   };
+  // });
 
+  return mainWindow;
+};
+
+const createTrayWindow = async (url: string) => {
+  const trayWindow = new BrowserWindow({
+    width: 500,
+    height: 780,
+    autoHideMenuBar: true,
+    frame: false,
+    fullscreenable: false,
+    webPreferences: {
+      preload: path.join(__dirname, 'preload.js'),
+    },
+    transparent: true,
+    hiddenInMissionControl: true,
+  });
+  // and load the index.html of the app.
+  if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
+    await trayWindow.loadURL(MAIN_WINDOW_VITE_DEV_SERVER_URL + url);
+  } else {
+    await trayWindow.loadFile(
+      path.join(
+        __dirname,
+        `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html${url}`,
+      ),
+    );
+  }
+  return trayWindow;
+};
+
+const ipcListener = (window: BrowserWindow) => {
   ipcMain.on('minimize-window', () => {
-    mainWindow.minimize();
+    window.minimize();
+  });
+  ipcMain.on('open-window', (_, url: string) => {
+    return createTrayWindow(url);
   });
 };
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.on('ready', createWindow);
+app.on('ready', () => {
+  const mainWindow = createWindow();
+  ipcListener(mainWindow);
+});
 
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits

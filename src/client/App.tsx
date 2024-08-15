@@ -15,7 +15,7 @@ export default function App() {
 
   const handleEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && value.startsWith('http')) {
-      window.open(`/#${value}`, '_blank');
+      window.electron.openWindow(`/#${value}`);
     }
   };
 
