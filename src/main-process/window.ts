@@ -1,5 +1,6 @@
-import { BrowserWindow, nativeImage, Tray } from 'electron';
+import { BrowserWindow, Menu, nativeImage, screen, Tray } from 'electron';
 import path from 'path';
+import { isCursorInside } from './helper';
 
 const icon = nativeImage.createFromPath('src/assets/favicon.ico');
 
@@ -32,7 +33,6 @@ const createWindow = async (): Promise<BrowserWindow> => {
   const mainWindow = new BrowserWindow({
     width: 600,
     height: 680,
-
     ...options,
   });
 
@@ -43,21 +43,21 @@ const createWindow = async (): Promise<BrowserWindow> => {
 const createTrayWindow = async (
   url: string,
 ): Promise<[BrowserWindow, Tray]> => {
-  const [winWidth, winHeight] = [500, 780];
+  const [width, height] = [460, 780];
 
   const tray = new Tray(icon);
-  const { x, y, width, height } = tray.getBounds();
+  const bounds = tray.getBounds();
   const trayWindow = new BrowserWindow({
-    width: winWidth,
-    height: winHeight,
+    width,
+    height,
     transparent: true,
     hiddenInMissionControl: true,
     // show: false,
     ...options,
   });
   trayWindow.setPosition(
-    Math.floor(x - winWidth / 2 + width / 2),
-    Math.floor(y - winHeight - height / 2),
+    Math.floor(bounds.x - width / 2 + bounds.width / 2),
+    Math.floor(bounds.y - height - bounds.height / 2),
   );
 
   await _loadApp(trayWindow, url);
@@ -70,13 +70,34 @@ const createTrayWindow = async (
   tray.on('click', () => {
     trayWindow.isVisible() ? trayWindow.hide() : trayWindow.show();
   });
-  tray.on('right-click', () => {
-    trayWindow.close();
-    tray.destroy();
-  });
   trayWindow.on('blur', () => {
-    if (!trayWindow.isAlwaysOnTop()) trayWindow.hide();
+    if (
+      !trayWindow.isAlwaysOnTop() &&
+      !isCursorInside(screen.getCursorScreenPoint(), tray.getBounds())
+    )
+      trayWindow.hide();
   });
+
+  const contextMenu = Menu.buildFromTemplate([
+    {
+      label: 'Refresh',
+      click: () => {
+        trayWindow.reload();
+      },
+    },
+    {
+      label: 'Always On Top',
+      type: 'checkbox',
+      checked: false,
+      click: (e: Electron.MenuItem) => {
+        trayWindow.setAlwaysOnTop(e.checked);
+        e.checked && trayWindow.show();
+      },
+    },
+    { label: 'Exit', type: 'normal', click: () => trayWindow.close() },
+  ]);
+  tray.setContextMenu(contextMenu);
+
   return [trayWindow, tray];
 };
 
