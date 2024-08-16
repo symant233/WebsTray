@@ -60,7 +60,7 @@ const createTrayWindow = async (
     height,
     transparent: true,
     hiddenInMissionControl: true,
-    // show: false,
+    skipTaskbar: true,
     ...options,
   });
   _setPosition(trayWindow, tray);
@@ -69,9 +69,6 @@ const createTrayWindow = async (
   trayWindow.once('closed', () => {
     tray.destroy();
   });
-  // trayWindow.once('ready-to-show', () => {
-  //   trayWindow.show();
-  // });
 
   // visibility part
   tray.on('click', () => {

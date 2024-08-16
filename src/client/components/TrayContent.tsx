@@ -1,21 +1,24 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import CloseButton from './common/CloseButton';
+import BackButton from './common/BackButton';
+import RefreshButton from './common/RefreshButton';
 
 type Props = {
   url: string;
 };
 
-// type IIframeInfo = {
-//   title?: string;
-//   icon?: string;
-// };
-
 export default function TrayContent({ url }: Props) {
   const iframeRef = useRef<HTMLIFrameElement>(null);
-  // const [iframeInfo, setIframeInfo] = useState<IIframeInfo>({});
 
   useEffect(() => {
-    console.log(iframeRef.current.contentDocument.title);
+    iframeRef.current.contentWindow.open = (
+      url?: string | URL,
+      _target?: string,
+      _features?: string,
+    ): Window => {
+      iframeRef.current.src = url as string;
+      return iframeRef.current.contentWindow;
+    };
   }, [iframeRef.current]);
 
   return (
@@ -24,14 +27,15 @@ export default function TrayContent({ url }: Props) {
         <iframe
           ref={iframeRef}
           src={url}
-          className="w-full h-full rounded-lg border border-solid"
+          className="w-full h-full rounded-lg border border-solid shadow"
         ></iframe>
-        <div className="select-none pt-1 text-sm text-gray-600 whitespace-nowrap w-full flex flex-row">
+        <div className="select-none pt-1 text-sm text-gray-600 whitespace-nowrap w-full flex flex-row items-center">
+          <BackButton />
           <span className="overflow-hidden text-ellipsis w-64">
             {iframeRef.current?.contentDocument?.title || url}
           </span>
           <div className="flex-1"></div>
-
+          <RefreshButton />
           <CloseButton />
         </div>
       </div>
