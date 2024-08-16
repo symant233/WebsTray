@@ -6,6 +6,7 @@ import ipcListener from './main-process/ipcListener';
 if (require('electron-squirrel-startup')) {
   app.quit();
 }
+app.commandLine.appendSwitch('wm-window-animations-disabled'); // stop flicker
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.

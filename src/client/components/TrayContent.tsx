@@ -26,10 +26,12 @@ export default function TrayContent({ url }: Props) {
           src={url}
           className="w-full h-full rounded-lg border border-solid"
         ></iframe>
-        <div className="select-none pt-1 text-sm text-gray-600 whitespace-nowrap w-full flex flex-row justify-between">
+        <div className="select-none pt-1 text-sm text-gray-600 whitespace-nowrap w-full flex flex-row">
           <span className="overflow-hidden text-ellipsis w-64">
             {iframeRef.current?.contentDocument?.title || url}
           </span>
+          <div className="flex-1"></div>
+
           <CloseButton />
         </div>
       </div>

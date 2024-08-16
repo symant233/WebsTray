@@ -72,6 +72,8 @@ const createTrayWindow = async (
   // trayWindow.once('ready-to-show', () => {
   //   trayWindow.show();
   // });
+
+  // visibility part
   tray.on('click', () => {
     if (trayWindow.isVisible()) {
       trayWindow.hide();
