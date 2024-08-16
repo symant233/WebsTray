@@ -9,7 +9,7 @@ export default function AppInput() {
   const handleEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       const href = urlValidator(inputRef.current?.value);
-      href && window.electron.openWindow(`/#${href}`);
+      href && window.electron.openWindow(href);
     }
   };
 

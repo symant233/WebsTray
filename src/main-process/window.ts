@@ -9,13 +9,13 @@ const icon = nativeImage.createFromPath('src/assets/favicon.ico');
 // load the index.html of the app.
 const _loadApp = async (window: BrowserWindow, url = '') => {
   if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
-    await window.loadURL(MAIN_WINDOW_VITE_DEV_SERVER_URL + url);
+    await window.loadURL(MAIN_WINDOW_VITE_DEV_SERVER_URL + `/#${url}`);
   } else {
     await window.loadFile(
-      path.join(
-        __dirname,
-        `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html${url}`,
-      ),
+      path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`),
+      {
+        hash: url,
+      },
     );
   }
 };
