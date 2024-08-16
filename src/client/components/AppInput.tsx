@@ -1,14 +1,15 @@
 import Icon from '@mdi/react';
 import { mdiLink } from '@mdi/js';
 import { useRef } from 'react';
+import { urlValidator } from '../utils/urlValidator';
 
 export default function AppInput() {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const handleEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    const url = inputRef.current?.value || '';
-    if (e.key === 'Enter' && url.startsWith('http')) {
-      window.electron.openWindow(`/#${url}`);
+    if (e.key === 'Enter') {
+      const href = urlValidator(inputRef.current?.value);
+      href && window.electron.openWindow(`/#${href}`);
     }
   };
 

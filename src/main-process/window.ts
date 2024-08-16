@@ -2,6 +2,8 @@ import { BrowserWindow, Menu, nativeImage, screen, Tray } from 'electron';
 import path from 'path';
 import { isCursorInside } from './helper';
 
+let mainWindowInstance: BrowserWindow | null;
+
 const icon = nativeImage.createFromPath('src/assets/favicon.ico');
 
 // load the index.html of the app.
@@ -46,6 +48,10 @@ const createWindow = async (): Promise<BrowserWindow> => {
   });
 
   await _loadApp(mainWindow);
+  mainWindowInstance = mainWindow;
+  mainWindow.once('closed', () => {
+    mainWindowInstance = null;
+  });
   return mainWindow;
 };
 
@@ -89,6 +95,15 @@ const createTrayWindow = async (
 
   const contextMenu = Menu.buildFromTemplate([
     {
+      label: 'Main Window',
+      click: () => {
+        mainWindowInstance || createWindow();
+      },
+    },
+    {
+      type: 'separator',
+    },
+    {
       label: 'Refresh',
       click: () => {
         trayWindow.reload();
@@ -106,7 +121,12 @@ const createTrayWindow = async (
         }
       },
     },
-    { label: 'Exit', type: 'normal', click: () => trayWindow.close() },
+    {
+      label: 'Exit',
+      type: 'normal',
+      role: 'close',
+      click: () => trayWindow.close(),
+    },
   ]);
   tray.setContextMenu(contextMenu);
 
