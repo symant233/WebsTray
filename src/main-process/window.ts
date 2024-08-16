@@ -18,6 +18,15 @@ const _loadApp = async (window: BrowserWindow, url = '') => {
   }
 };
 
+const _setPosition = (window: BrowserWindow, tray: Tray) => {
+  const bounds = tray.getBounds();
+  const winBounds = window.getBounds();
+  window.setPosition(
+    Math.floor(bounds.x - winBounds.width / 2 + bounds.width / 2),
+    Math.floor(bounds.y - winBounds.height - 4),
+  );
+};
+
 const options: Electron.BrowserWindowConstructorOptions = {
   webPreferences: {
     preload: path.join(__dirname, 'preload.js'),
@@ -46,7 +55,6 @@ const createTrayWindow = async (
   const [width, height] = [460, 780];
 
   const tray = new Tray(icon);
-  const bounds = tray.getBounds();
   const trayWindow = new BrowserWindow({
     width,
     height,
@@ -55,10 +63,7 @@ const createTrayWindow = async (
     // show: false,
     ...options,
   });
-  trayWindow.setPosition(
-    Math.floor(bounds.x - width / 2 + bounds.width / 2),
-    Math.floor(bounds.y - height - bounds.height / 2),
-  );
+  _setPosition(trayWindow, tray);
 
   await _loadApp(trayWindow, url);
   trayWindow.once('closed', () => {
@@ -68,7 +73,12 @@ const createTrayWindow = async (
   //   trayWindow.show();
   // });
   tray.on('click', () => {
-    trayWindow.isVisible() ? trayWindow.hide() : trayWindow.show();
+    if (trayWindow.isVisible()) {
+      trayWindow.hide();
+    } else {
+      trayWindow.show();
+      _setPosition(trayWindow, tray);
+    }
   });
   trayWindow.on('blur', () => {
     if (
@@ -91,7 +101,10 @@ const createTrayWindow = async (
       checked: false,
       click: (e: Electron.MenuItem) => {
         trayWindow.setAlwaysOnTop(e.checked);
-        e.checked && trayWindow.show();
+        if (e.checked) {
+          trayWindow.show();
+          _setPosition(trayWindow, tray);
+        }
       },
     },
     { label: 'Exit', type: 'normal', click: () => trayWindow.close() },

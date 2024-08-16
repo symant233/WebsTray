@@ -27,7 +27,3 @@
  */
 
 import './client/index';
-
-console.debug(
-  '👋 This message is being logged by "renderer.ts", included via Vite',
-);

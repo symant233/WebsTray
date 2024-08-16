@@ -2,6 +2,11 @@
 
 Inspired by _WebStay_. **WebsTray** allows you to pin any web apps to system tray.
 
+## Features
+
+- Opensource.
+- Flexible configuration. // TODO
+
 ## Develop References
 
 ```bash
@@ -13,3 +18,7 @@ ELECTRON_MIRROR="https://npmmirror.com/mirrors/electron/"
 - https://www.electronjs.org/zh/docs/latest/api/app
 - https://www.electronjs.org/zh/docs/latest/api/tray
 - https://www.electronjs.org/zh/docs/latest/api/menu-item
+
+## License
+
+GPL-3.0
