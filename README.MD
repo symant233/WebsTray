@@ -18,6 +18,7 @@ ELECTRON_MIRROR="https://npmmirror.com/mirrors/electron/"
 - https://www.electronjs.org/zh/docs/latest/api/app
 - https://www.electronjs.org/zh/docs/latest/api/tray
 - https://www.electronjs.org/zh/docs/latest/api/menu-item
+- https://www.electronjs.org/zh/docs/latest/api/app
 
 ## License
 
