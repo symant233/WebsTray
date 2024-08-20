@@ -11,3 +11,9 @@ export function isCursorInside(
     return true;
   return false;
 }
+
+export function getPublicAsset(file: string) {
+  return MAIN_WINDOW_VITE_DEV_SERVER_URL
+    ? `public/${file}`
+    : `../public/${file}`;
+}
