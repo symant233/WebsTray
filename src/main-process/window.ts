@@ -1,11 +1,10 @@
-import { BrowserWindow, Menu, nativeImage, screen, Tray, app } from 'electron';
+import { BrowserWindow, Menu, nativeImage, screen, Tray } from 'electron';
 import path from 'path';
 import { getPublicAsset, isCursorInside } from './helper';
 
 let mainWindowInstance: BrowserWindow | null;
 
-const appIcon = path.resolve(app.getAppPath(), getPublicAsset('favicon.ico'));
-const icon = nativeImage.createFromPath(appIcon); // Tray & BrowserWindow icon
+const icon = nativeImage.createFromPath(getPublicAsset('favicon.ico')); // Tray & BrowserWindow icon
 
 // load the index.html of the app.
 const _loadApp = async (window: BrowserWindow, url = '') => {

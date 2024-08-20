@@ -1,3 +1,6 @@
+import { app } from 'electron';
+import path from 'path';
+
 export function isCursorInside(
   point: Electron.Point,
   bounds: Electron.Rectangle,
@@ -14,6 +17,6 @@ export function isCursorInside(
 
 export function getPublicAsset(file: string) {
   return MAIN_WINDOW_VITE_DEV_SERVER_URL
-    ? `public/${file}`
-    : `../public/${file}`;
+    ? path.resolve(app.getAppPath(), `public/${file}`)
+    : `${process.resourcesPath}/public/${file}`;
 }

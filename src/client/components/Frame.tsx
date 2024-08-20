@@ -11,7 +11,7 @@ const Frame = ({ children }: Props) => {
   return (
     <div
       id="frame"
-      className="select-none w-full h-14 flex flex-row items-center bg-gray-50 border border-solid p-4 justify-between"
+      className="select-none w-full h-14 flex flex-row items-center bg-gray-50 border border-solid p-4 justify-between shadow-sm"
     >
       <div className="font-bold text-sm mx-2">WebsTray</div>
       <div className="no-drag">{children}</div>
