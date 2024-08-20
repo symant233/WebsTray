@@ -1,23 +1,26 @@
 import useStorage from '../hooks/useStorage';
 import { IData, STORAGE_FAVORITE, STORAGE_RECENT } from '../types';
+import getHostname from '../utils/getHostname';
 
 type IContentItemProps = {
   item: IData;
 };
 
 function ContentItem({ item }: IContentItemProps) {
+  const hostname = getHostname(item.url);
+
   return (
     <div
       className="hover:bg-gray-200 rounded-lg flex flex-col items-center justify-center p-4 gap-2 cursor-pointer"
       onClick={() => window.electron.openWindow(item.url)}
     >
       <img
-        src={item?.icon || `${item.url}/favicon.ico`}
+        src={item?.icon || `https://${hostname}/favicon.ico`}
         width={64}
         height={64}
       />
       <span className="w-20 overflow-hidden overflow-ellipsis text-nowrap whitespace-nowrap">
-        {item?.title || item.url}
+        {item?.title || hostname}
       </span>
     </div>
   );

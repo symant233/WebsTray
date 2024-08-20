@@ -1,7 +1,7 @@
 import { memo } from 'react';
 import Icon from '@mdi/react';
 import { mdiMinus } from '@mdi/js';
-import CloseButton from './common/CloseButton';
+import { CloseButton } from './common/IconButtons';
 
 type Props = {
   children: React.ReactNode;

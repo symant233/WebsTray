@@ -4,7 +4,7 @@ import { getPublicAsset, isCursorInside } from './helper';
 
 let mainWindowInstance: BrowserWindow | null;
 
-const icon = nativeImage.createFromPath(getPublicAsset('favicon.ico')); // Tray & BrowserWindow icon
+const icon = nativeImage.createFromPath(getPublicAsset('WebsTray.png'));
 
 // load the index.html of the app.
 const _loadApp = async (window: BrowserWindow, url = '') => {
@@ -32,6 +32,7 @@ const _setPosition = (window: BrowserWindow, tray: Tray) => {
 const options: Electron.BrowserWindowConstructorOptions = {
   webPreferences: {
     preload: path.join(__dirname, 'preload.js'),
+    webviewTag: true,
   },
   icon,
   autoHideMenuBar: true,
@@ -58,12 +59,10 @@ const createWindow = async (): Promise<BrowserWindow> => {
 const createTrayWindow = async (
   url: string,
 ): Promise<[BrowserWindow, Tray]> => {
-  const [width, height] = [460, 780];
-
   const tray = new Tray(icon);
   const trayWindow = new BrowserWindow({
-    width,
-    height,
+    width: 430,
+    height: 780,
     transparent: true,
     hiddenInMissionControl: true,
     skipTaskbar: true,
@@ -102,6 +101,12 @@ const createTrayWindow = async (
     },
     {
       type: 'separator',
+    },
+    {
+      label: 'Tray Devtool',
+      click: () => {
+        trayWindow.webContents.openDevTools();
+      },
     },
     {
       label: 'Refresh',

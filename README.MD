@@ -20,6 +20,8 @@ ELECTRON_MIRROR="https://npmmirror.com/mirrors/electron/"
 - https://www.electronjs.org/zh/docs/latest/api/menu-item
 - https://www.electronjs.org/zh/docs/latest/api/app
 
+APP Icon: [Figma/WebsTray](https://www.figma.com/design/ZU2hK5Z1rKUuyu092ukdga/WebsTray)
+
 ## License
 
 GPL-3.0
