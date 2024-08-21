@@ -1,6 +1,7 @@
 import { app, BrowserWindow } from 'electron';
 import { createWindow } from './main-process/window';
 import ipcListener from './main-process/ipcListener';
+import session from './main-process/session';
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
@@ -14,6 +15,7 @@ app.commandLine.appendSwitch('wm-window-animations-disabled'); // stop flicker
 app.on('ready', async () => {
   const mainWindow = await createWindow();
   ipcListener(mainWindow);
+  session();
 });
 
 // Quit when all windows are closed, except on macOS. There, it's common

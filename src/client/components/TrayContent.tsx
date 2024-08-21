@@ -24,6 +24,7 @@ export default function TrayContent({ url }: Props) {
         const base = document.createElement('base');
         base.target = '_self';
         document.head.appendChild(base);
+        window.orientation = 0;
       `);
       webview.current.insertCSS(`
         iframe {

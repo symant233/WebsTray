@@ -102,7 +102,7 @@ const createTrayWindow = async (
     {
       label: 'Main Window',
       click: () => {
-        mainWindowInstance || createWindow();
+        mainWindowInstance ? mainWindowInstance.focus() : createWindow();
       },
     },
     {
