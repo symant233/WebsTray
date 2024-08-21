@@ -1,11 +1,14 @@
 # WebsTray
 
+<p align="center">
+  <img src="public/WebsTray.png" alt="描述" width="50" height="50">
+</p>
+
 Inspired by _WebStay_. **WebsTray** allows you to pin any web apps to system tray.
 
 ## Features
 
-- Opensource.
-- Flexible configuration. // TODO
+- Opensource, free to use or modify.
 
 ## Develop References
 
@@ -24,4 +27,4 @@ APP Icon: [Figma/WebsTray](https://www.figma.com/design/ZU2hK5Z1rKUuyu092ukdga/W
 
 ## License
 
-GPL-3.0
+> GPL-3.0
