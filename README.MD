@@ -22,6 +22,7 @@ ELECTRON_MIRROR="https://npmmirror.com/mirrors/electron/"
 - https://www.electronjs.org/zh/docs/latest/api/tray
 - https://www.electronjs.org/zh/docs/latest/api/menu-item
 - https://www.electronjs.org/zh/docs/latest/api/app
+- https://www.electronjs.org/zh/docs/latest/api/webview-tag
 
 APP Icon: [Figma/WebsTray](https://www.figma.com/design/ZU2hK5Z1rKUuyu092ukdga/WebsTray)
 

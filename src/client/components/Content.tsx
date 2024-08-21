@@ -33,7 +33,7 @@ export default function Content() {
   return (
     <div className="w-full h-full p-6 select-none gap-2">
       <div className="font-bold text-lg mb-2">Recent</div>
-      <div className="flex flex-row flex-wrap">
+      <div className="flex flex-row flex-wrap gap-1">
         {storageList.length ? (
           storageList.map((i) => {
             return <ContentItem item={i} key={i.url} />;
@@ -46,7 +46,7 @@ export default function Content() {
       </div>
 
       <div className="font-bold text-lg my-2">Favorite</div>
-      <div className="flex flex-row flex-wrap">
+      <div className="flex flex-row flex-wrap gap-1">
         {favoriteList.length ? (
           favoriteList.map((i) => {
             return <ContentItem item={i} key={i.url} />;

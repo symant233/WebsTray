@@ -39,6 +39,7 @@ const options: Electron.BrowserWindowConstructorOptions = {
   webPreferences: {
     preload: path.join(__dirname, 'preload.js'),
     webviewTag: true,
+    nodeIntegration: true,
   },
   icon,
   autoHideMenuBar: true,

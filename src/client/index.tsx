@@ -13,7 +13,7 @@ const App = () => {
   }
 
   useHotKey('F5', () => {
-    window.location.reload();
+    window.location?.reload();
   });
 
   return (
