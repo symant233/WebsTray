@@ -23,6 +23,12 @@ const _loadApp = async (window: BrowserWindow, url = '') => {
 const _setPosition = (window: BrowserWindow, tray: Tray) => {
   const bounds = tray.getBounds();
   const winBounds = window.getBounds();
+  const screenBounds = screen.getPrimaryDisplay().bounds;
+  if (bounds.x < 100) {
+    // on tray hide
+    bounds.x = screenBounds.width - winBounds.width / 2 - 50;
+    bounds.y = screenBounds.height - 50;
+  }
   window.setPosition(
     Math.floor(bounds.x - winBounds.width / 2 + bounds.width / 2),
     Math.floor(bounds.y - winBounds.height - 4),
