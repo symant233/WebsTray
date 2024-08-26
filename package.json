@@ -1,7 +1,7 @@
 {
   "name": "webs-tray",
   "productName": "webs-tray",
-  "version": "1.0.0",
+  "version": "1.0.0-rc1",
   "description": "My Electron application description",
   "private": true,
   "main": ".vite/build/main.js",
