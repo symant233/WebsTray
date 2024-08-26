@@ -18,7 +18,7 @@ function ContentItem({ item }: IContentItemProps) {
         width={64}
         height={64}
       />
-      <span className="w-20 overflow-hidden overflow-ellipsis text-nowrap whitespace-nowrap">
+      <span className="w-20 overflow-hidden overflow-ellipsis text-nowrap whitespace-nowrap text-center">
         {item?.title || hostname}
       </span>
     </div>

@@ -7,8 +7,7 @@ import {
   HomeButton,
   RefreshButton,
 } from './common/IconButtons';
-import { fetchJsonData } from '../services/api';
-import manifestHelper, { IManifest } from '../utils/manifestHelper';
+import manifestHelper from '../utils/manifestHelper';
 import useDataStore from '../hooks/useDataStore';
 
 type Props = {
@@ -26,9 +25,8 @@ export default function TrayContent({ url }: Props) {
       `document.querySelector('link[rel="manifest"]')?.href;`,
     );
     try {
-      const data = await fetchJsonData<IManifest>(manifest);
-      const parsed = manifestHelper(data);
-      updateRecent(url, { manifest, ...parsed });
+      const data = await manifestHelper(manifest);
+      updateRecent(url, { manifest, ...data });
     } catch (err) {
       console.log('TrayContent', err);
     }
@@ -65,7 +63,7 @@ export default function TrayContent({ url }: Props) {
     <div className="w-screen h-screen p-1 pb-3">
       <div className="w-full h-full bg-gray-100 shadow p-2 pb-8 rounded-lg relative after:content-[''] after:absolute after:-bottom-[12px] after:left-1/2 after:-translate-x-1/2 after:border-x-[12px] after:border-transparent after:border-t-[12px] after:border-t-gray-100">
         <webview
-          disablewebsecurity
+          // disablewebsecurity
           ref={webview}
           src={url}
           className="w-full h-full rounded-lg border border-solid shadow"

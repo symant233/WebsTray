@@ -1,4 +1,6 @@
+import { fetchJsonData } from '../services/api';
 import { IData } from '../types';
+import getHostname from './getHostname';
 
 export type IManifest = {
   name: string;
@@ -6,7 +8,9 @@ export type IManifest = {
   icons: { src: string; sizes: string }[];
 };
 
-function manifestHelper(manifest: IManifest): Partial<IData> {
+async function manifestHelper(url: string): Promise<Partial<IData>> {
+  const manifest = await fetchJsonData<IManifest>(url);
+
   if (!manifest || !manifest.icons) {
     return undefined;
   }
@@ -24,6 +28,10 @@ function manifestHelper(manifest: IManifest): Partial<IData> {
     ) {
       largestIcon = icon;
     }
+  }
+
+  if (largestIcon?.src.startsWith('/')) {
+    largestIcon.src = `https://${getHostname(url)}${largestIcon.src}`;
   }
 
   return { icon: largestIcon?.src, title: manifest.short_name };
