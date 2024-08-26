@@ -1,7 +1,7 @@
 {
   "name": "webs-tray",
   "productName": "webs-tray",
-  "version": "1.0.0",
+  "version": "1.0.0-rc1",
   "description": "My Electron application description",
   "private": true,
   "main": ".vite/build/main.js",
@@ -16,7 +16,8 @@
   "dependencies": {
     "electron-squirrel-startup": "^1.0.1",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react-dom": "^18.3.1",
+    "zustand": "^4.5.5"
   },
   "devDependencies": {
     "@electron-forge/cli": "^7.4.0",

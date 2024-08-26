@@ -8,6 +8,7 @@ const ipcListener = (window: BrowserWindow) => {
   ipcMain.on('open-window', (_, url: string) => {
     return createTrayWindow(url);
   });
+  // * required to update preload.ts after modification
 };
 
 export default ipcListener;
