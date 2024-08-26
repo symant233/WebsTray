@@ -7,9 +7,9 @@ import {
   HomeButton,
   RefreshButton,
 } from './common/IconButtons';
-import useData from '../hooks/useData';
 import { fetchJsonData } from '../services/api';
 import manifestHelper, { IManifest } from '../utils/manifestHelper';
+import useDataStore from '../hooks/useDataStore';
 
 type Props = {
   url: string;
@@ -19,7 +19,7 @@ export default function TrayContent({ url }: Props) {
   const webview = useRef<WebviewTag>(null);
   const [title, setTitle] = useState(url);
 
-  const { updateStorageItem } = useData();
+  const updateRecent = useDataStore((state) => state.updateRecent);
 
   async function handleManifest() {
     const manifest = await webview.current.executeJavaScript(
@@ -28,7 +28,7 @@ export default function TrayContent({ url }: Props) {
     try {
       const data = await fetchJsonData<IManifest>(manifest);
       const parsed = manifestHelper(data);
-      updateStorageItem(url, { manifest, ...parsed });
+      updateRecent(url, { manifest, ...parsed });
     } catch (err) {
       console.log('TrayContent', err);
     }

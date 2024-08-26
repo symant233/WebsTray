@@ -5,6 +5,3 @@ export type IData = {
   icon?: string;
   manifest?: string;
 };
-
-export const STORAGE_RECENT = 'wt-recent';
-export const STORAGE_FAVORITE = 'wt-favorite';
