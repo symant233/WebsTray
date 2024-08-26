@@ -1,3 +1,4 @@
+import { appIconBase64 } from '../constant';
 import useDataStore from '../hooks/useDataStore';
 import type { IData } from '../types';
 import getHostname from '../utils/getHostname';
@@ -17,6 +18,10 @@ function ContentItem({ item }: IContentItemProps) {
         src={item?.icon || `https://${hostname}/favicon.ico`}
         width={64}
         height={64}
+        className="rounded-lg"
+        onError={(e) => {
+          e.currentTarget.src = appIconBase64;
+        }}
       />
       <span className="w-20 overflow-hidden overflow-ellipsis text-nowrap whitespace-nowrap text-center">
         {item?.title || hostname}
@@ -26,10 +31,8 @@ function ContentItem({ item }: IContentItemProps) {
 }
 
 export default function Content() {
-  const { recent, favorite } = useDataStore((state) => ({
-    recent: state.recent,
-    favorite: state.favorite,
-  }));
+  const recent = useDataStore((state) => state.recent);
+  const favorite = useDataStore((state) => state.favorite);
 
   return (
     <div className="w-full h-full p-6 select-none gap-2">

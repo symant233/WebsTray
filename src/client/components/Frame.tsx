@@ -8,12 +8,16 @@ type Props = {
 };
 
 const Frame = ({ children }: Props) => {
+  const isDev = process.env.NODE_ENV === 'development';
   return (
     <div
       id="frame"
       className="select-none w-full h-14 flex flex-row items-center bg-gray-50 border border-solid p-4 justify-between shadow-sm"
     >
-      <div className="font-bold text-sm mx-2">WebsTray</div>
+      <div className="font-bold text-sm mx-2">
+        WebsTray
+        {isDev && <span className="bg-blue-500 text-white text-xs">DEV</span>}
+      </div>
       <div className="no-drag">{children}</div>
       <div className="flex flex-row no-drag pl-8 gap-2 text-gray-600">
         <div

@@ -12,7 +12,7 @@ async function manifestHelper(url: string): Promise<Partial<IData>> {
   const manifest = await fetchJsonData<IManifest>(url);
 
   if (!manifest || !manifest.icons) {
-    return undefined;
+    return { title: manifest?.short_name || manifest?.name };
   }
 
   let largestIcon: { src: string; sizes: string } | undefined = undefined;
@@ -34,7 +34,10 @@ async function manifestHelper(url: string): Promise<Partial<IData>> {
     largestIcon.src = `https://${getHostname(url)}${largestIcon.src}`;
   }
 
-  return { icon: largestIcon?.src, title: manifest.short_name };
+  return {
+    icon: largestIcon?.src,
+    title: manifest?.short_name || manifest?.name,
+  };
 }
 
 export default manifestHelper;

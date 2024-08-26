@@ -21,14 +21,17 @@ export default function TrayContent({ url }: Props) {
   const updateRecent = useDataStore((state) => state.updateRecent);
 
   async function handleManifest() {
+    const webTitle = webview.current?.getTitle();
+    setTitle(webTitle);
     const manifest = await webview.current.executeJavaScript(
       `document.querySelector('link[rel="manifest"]')?.href;`,
     );
     try {
       const data = await manifestHelper(manifest);
+      if (!data.title) data.title = webTitle;
       updateRecent(url, { manifest, ...data });
     } catch (err) {
-      console.log('TrayContent', err);
+      console.error('TrayContent', err);
     }
   }
 
@@ -54,7 +57,6 @@ export default function TrayContent({ url }: Props) {
       });
       webview.current.shadowRoot.querySelector('iframe').style.borderRadius =
         '0.5rem';
-      setTitle(webview.current?.getTitle());
       handleManifest();
     });
   }, [webview]);
