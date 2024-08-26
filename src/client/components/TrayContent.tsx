@@ -7,6 +7,9 @@ import {
   HomeButton,
   RefreshButton,
 } from './common/IconButtons';
+import useData from '../hooks/useData';
+import { fetchJsonData } from '../services/api';
+import manifestHelper, { IManifest } from '../utils/manifestHelper';
 
 type Props = {
   url: string;
@@ -15,6 +18,21 @@ type Props = {
 export default function TrayContent({ url }: Props) {
   const webview = useRef<WebviewTag>(null);
   const [title, setTitle] = useState(url);
+
+  const { updateStorageItem } = useData();
+
+  async function handleManifest() {
+    const manifest = await webview.current.executeJavaScript(
+      `document.querySelector('link[rel="manifest"]')?.href;`,
+    );
+    try {
+      const data = await fetchJsonData<IManifest>(manifest);
+      const parsed = manifestHelper(data);
+      updateStorageItem(url, { manifest, ...parsed });
+    } catch (err) {
+      console.log('TrayContent', err);
+    }
+  }
 
   useEffect(() => {
     webview.current.addEventListener('dom-ready', () => {
@@ -26,7 +44,6 @@ export default function TrayContent({ url }: Props) {
         base.target = '_self';
         document.head.appendChild(base);
         window.orientation = 0;
-        
       `);
       webview.current.insertCSS(`
         iframe {
@@ -39,8 +56,8 @@ export default function TrayContent({ url }: Props) {
       });
       webview.current.shadowRoot.querySelector('iframe').style.borderRadius =
         '0.5rem';
-      // webview.current.openDevTools();
       setTitle(webview.current?.getTitle());
+      handleManifest();
     });
   }, [webview]);
 
@@ -49,7 +66,6 @@ export default function TrayContent({ url }: Props) {
       <div className="w-full h-full bg-gray-100 shadow p-2 pb-8 rounded-lg relative after:content-[''] after:absolute after:-bottom-[12px] after:left-1/2 after:-translate-x-1/2 after:border-x-[12px] after:border-transparent after:border-t-[12px] after:border-t-gray-100">
         <webview
           disablewebsecurity
-          useragent="Mozilla/5.0 (iPhone; CPU iPhone OS 16_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.6 Mobile/15E148 Safari/604.1"
           ref={webview}
           src={url}
           className="w-full h-full rounded-lg border border-solid shadow"

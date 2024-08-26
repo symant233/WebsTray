@@ -22,12 +22,24 @@ export default function useStorage<T>(key: string) {
     };
   }, []);
 
+  const _setter = (current: T[]) => {
+    setStorageList(current);
+    localStorage.setItem(key, JSON.stringify(current));
+    eventManager.emit(EVENT_UPDATE, current);
+  };
+
   const addStorageItem = useCallback(
     (value: T) => {
       const current = [value, ...storageList];
-      setStorageList(current);
-      localStorage.setItem(key, JSON.stringify(current));
-      eventManager.emit(EVENT_UPDATE, current);
+      _setter(current);
+    },
+    [storageList],
+  );
+
+  const removeStorageItem = useCallback(
+    (value: T) => {
+      const current = storageList.filter((item) => item !== value);
+      _setter(current);
     },
     [storageList],
   );
@@ -38,5 +50,5 @@ export default function useStorage<T>(key: string) {
     eventManager.emit(EVENT_UPDATE, []);
   }, []);
 
-  return { storageList, addStorageItem, clear };
+  return { storageList, _setter, addStorageItem, removeStorageItem, clear };
 }

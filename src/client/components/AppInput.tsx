@@ -1,7 +1,8 @@
 import Icon from '@mdi/react';
 import { mdiLink } from '@mdi/js';
 import { useRef } from 'react';
-import { urlValidator } from '../utils/urlValidator';
+import urlValidator from '../utils/urlValidator';
+import getHostname from '../utils/getHostname';
 import useStorage from '../hooks/useStorage';
 import { IData, STORAGE_RECENT } from '../types';
 
@@ -13,7 +14,7 @@ export default function AppInput() {
     if (e.key === 'Enter') {
       const href = urlValidator(inputRef.current?.value);
       if (href) {
-        addStorageItem({ url: href }); // add recent url
+        addStorageItem({ url: href, hostname: getHostname(href) }); // add recent url
         window.electron.openWindow(href);
       }
     }
