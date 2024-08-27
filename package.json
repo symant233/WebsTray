@@ -1,6 +1,6 @@
 {
   "name": "webs-tray",
-  "productName": "webs-tray",
+  "productName": "WebsTray",
   "version": "1.0.0-rc1",
   "description": "My Electron application description",
   "private": true,
