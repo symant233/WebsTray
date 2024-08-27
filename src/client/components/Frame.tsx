@@ -2,13 +2,13 @@ import { memo } from 'react';
 import Icon from '@mdi/react';
 import { mdiMinus } from '@mdi/js';
 import { CloseButton } from './common/IconButtons';
+import DevLabel from './common/DevLabel';
 
 type Props = {
   children: React.ReactNode;
 };
 
 const Frame = ({ children }: Props) => {
-  const isDev = process.env.NODE_ENV === 'development';
   return (
     <div
       id="frame"
@@ -16,7 +16,7 @@ const Frame = ({ children }: Props) => {
     >
       <div className="font-bold text-sm mx-2">
         WebsTray
-        {isDev && <span className="bg-blue-500 text-white text-xs">DEV</span>}
+        <DevLabel />
       </div>
       <div className="no-drag">{children}</div>
       <div className="flex flex-row no-drag pl-8 gap-2 text-gray-600">
