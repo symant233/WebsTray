@@ -45,7 +45,10 @@ export default function TrayContent({ url }: Props) {
         const base = document.createElement('base');
         base.target = '_self';
         document.head.appendChild(base);
-        window.orientation = 0;
+        window.orientation = 1;
+        document.addEventListener('mouseup', (e) => {
+          if (e.button === 3) window.history.back();
+        });
       `);
       webview.current.insertCSS(`
         iframe {

@@ -1,6 +1,5 @@
 import { app, BrowserWindow } from 'electron';
 import { createWindow } from './main-process/window';
-import ipcListener from './main-process/ipcListener';
 import session from './main-process/session';
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
@@ -13,8 +12,7 @@ app.commandLine.appendSwitch('wm-window-animations-disabled'); // stop flicker
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on('ready', async () => {
-  const mainWindow = await createWindow();
-  ipcListener(mainWindow);
+  createWindow();
   session();
 });
 

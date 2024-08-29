@@ -1,6 +1,7 @@
 import { BrowserWindow, Menu, nativeImage, screen, Tray } from 'electron';
 import path from 'path';
 import { getPublicAsset, isCursorInside } from './helper';
+import ipcListener from './ipcListener';
 
 let mainWindowInstance: BrowserWindow | null;
 
@@ -49,18 +50,24 @@ const options: Electron.BrowserWindowConstructorOptions = {
 };
 
 const createWindow = async (): Promise<BrowserWindow> => {
-  const mainWindow = new BrowserWindow({
-    width: 600,
-    height: 680,
-    ...options,
-  });
+  if (mainWindowInstance) {
+    mainWindowInstance.show();
+  } else {
+    const mainWindow = new BrowserWindow({
+      width: 600,
+      height: 680,
+      ...options,
+    });
 
-  await _loadApp(mainWindow);
-  mainWindowInstance = mainWindow;
-  mainWindow.once('closed', () => {
-    mainWindowInstance = null;
-  });
-  return mainWindow;
+    await _loadApp(mainWindow);
+    mainWindowInstance = mainWindow;
+    const remover = ipcListener(mainWindow);
+    mainWindow.once('closed', () => {
+      remover();
+      mainWindowInstance = null;
+    });
+  }
+  return mainWindowInstance;
 };
 
 const createTrayWindow = async (
@@ -103,7 +110,7 @@ const createTrayWindow = async (
     {
       label: 'Main Window',
       click: () => {
-        mainWindowInstance ? mainWindowInstance.focus() : createWindow();
+        createWindow();
       },
     },
     {
