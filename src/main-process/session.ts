@@ -9,9 +9,16 @@ export default function sessionHandler() {
 
   session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
     const headers = details.responseHeaders;
-    delete headers['access-control-allow-origin'];
-    delete headers['Access-Control-Allow-Origin'];
-    headers['Access-Control-Allow-Origin'] = ['*'];
+
+    if (
+      !headers['Access-Control-Allow-Credentials'] &&
+      !headers['access-control-allow-credentials']
+    ) {
+      delete headers['access-control-allow-origin'];
+      delete headers['Access-Control-Allow-Origin'];
+      headers['Access-Control-Allow-Origin'] = ['*'];
+    }
+
     callback({ responseHeaders: headers });
   });
 }

@@ -15,6 +15,7 @@ export default function AppInput() {
       if (href) {
         addRecent({ url: href, hostname: getHostname(href) }); // add recent url
         window.electron.openWindow(href);
+        inputRef.current.value = '';
       }
     }
   };
