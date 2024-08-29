@@ -1,7 +1,7 @@
 import { BrowserWindow, Menu, nativeImage, screen, Tray } from 'electron';
 import path from 'path';
 import { getPublicAsset, isCursorInside } from './helper';
-import ipcListener from './ipcListener';
+import ipcListener, { trayIpcListener } from './ipcListener';
 
 let mainWindowInstance: BrowserWindow | null;
 const trayMapper = new Map<string, [BrowserWindow, Tray]>();
@@ -94,7 +94,9 @@ const createTrayWindow = async (
   _setPosition(trayWindow, tray);
 
   await _loadApp(trayWindow, url);
+  const remover = trayIpcListener(tray);
   trayWindow.once('closed', () => {
+    remover();
     tray.destroy();
     trayMapper.delete(url);
   });

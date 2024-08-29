@@ -10,6 +10,7 @@ import {
 import manifestHelper from '../utils/manifestHelper';
 import useDataStore from '../hooks/useDataStore';
 import DevLabel from './common/DevLabel';
+import { convertImageToDataURL } from '../utils/imageConverter';
 
 type Props = {
   url: string;
@@ -31,6 +32,10 @@ export default function TrayContent({ url }: Props) {
       const data = await manifestHelper(manifest);
       if (!data.title) data.title = webTitle;
       updateRecent(url, { manifest, ...data });
+      if (data.icon) {
+        const base64 = await convertImageToDataURL(data.icon);
+        window.electron.setTrayIcon(base64);
+      }
     } catch (err) {
       console.error('TrayContent', err);
     }
