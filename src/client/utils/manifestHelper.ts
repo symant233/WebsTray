@@ -51,7 +51,7 @@ async function manifestHelper(url: string): Promise<Partial<IData>> {
 
   return {
     icon: largestIcon?.src,
-    favicon: smallestIcon?.src,
+    altIcon: smallestIcon?.src,
     title: manifest?.short_name || manifest?.name,
   };
 }

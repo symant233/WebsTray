@@ -35,8 +35,8 @@ export default function TrayContent({ url }: Props) {
       const data = await manifestHelper(manifest);
       if (!data.title) data.title = webTitle;
       updateRecent(url, { manifest, ...data, favicon });
-      if (favicon || data.icon) {
-        const base64 = await convertImageToDataURL(favicon || data.icon);
+      if (favicon || data.altIcon) {
+        const base64 = await convertImageToDataURL(favicon || data.altIcon);
         window.electron.setTrayIcon(url, base64);
       }
     } catch (err) {
