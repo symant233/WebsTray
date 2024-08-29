@@ -8,6 +8,10 @@ const ipcListener = (window: BrowserWindow): (() => void) => {
   ipcMain.on('open-window', (_, url: string) => {
     return createTrayWindow(url);
   });
+  ipcMain.on('reload-window', () => {
+    window.reload();
+  });
+
   return () => {
     ipcMain.removeAllListeners();
   };

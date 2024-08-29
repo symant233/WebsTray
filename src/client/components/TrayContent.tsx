@@ -34,6 +34,7 @@ export default function TrayContent({ url }: Props) {
     } catch (err) {
       console.error('TrayContent', err);
     }
+    window.electron.reload();
   }
 
   useEffect(() => {
