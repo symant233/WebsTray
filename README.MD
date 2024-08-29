@@ -13,7 +13,10 @@ Inspired by _WebStay_. **WebsTray** allows you to pin any web apps to system tra
 ## Develop References
 
 ```bash
-ELECTRON_MIRROR="https://npmmirror.com/mirrors/electron/"
+npm run dev # start dev application
+
+npm run package # package into a platform-specific executable bundle
+npm make # make distributables (installer)
 ```
 
 - https://www.electronforge.io/
