@@ -20,8 +20,10 @@ const ipcListener = (window: BrowserWindow): (() => void) => {
   // * required to update preload.ts after modification
 };
 
-export const trayIpcListener = (tray: Tray) => {
-  const listener = (_: Electron.IpcMainEvent, dataURL: string) => {
+export const trayIpcListener = (origin: string, tray: Tray) => {
+  const listener = (_: Electron.IpcMainEvent, url: string, dataURL: string) => {
+    console.log(origin, url);
+    if (origin !== url) return;
     const icon = nativeImage.createFromDataURL(dataURL);
     tray.setImage(icon);
   };

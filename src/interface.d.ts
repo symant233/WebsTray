@@ -6,7 +6,7 @@ export interface IElectronAPI {
   openWindow: (url: string) => Promise<[BrowserWindow, Tray]>;
   reload: () => void;
   // tray ipc
-  setTrayIcon: (dataURL: string) => void;
+  setTrayIcon: (url: string, dataURL: string) => void;
 }
 
 declare global {

@@ -34,7 +34,7 @@ export default function TrayContent({ url }: Props) {
       updateRecent(url, { manifest, ...data });
       if (data.icon) {
         const base64 = await convertImageToDataURL(data.icon);
-        window.electron.setTrayIcon(base64);
+        window.electron.setTrayIcon(url, base64);
       }
     } catch (err) {
       console.error('TrayContent', err);

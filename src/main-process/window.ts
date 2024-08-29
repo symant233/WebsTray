@@ -94,7 +94,7 @@ const createTrayWindow = async (
   _setPosition(trayWindow, tray);
 
   await _loadApp(trayWindow, url);
-  const remover = trayIpcListener(tray);
+  const remover = trayIpcListener(url, tray);
   trayWindow.once('closed', () => {
     remover();
     tray.destroy();

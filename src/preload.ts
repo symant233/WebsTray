@@ -8,5 +8,6 @@ contextBridge.exposeInMainWorld('electron', {
   openWindow: (url: string) => ipcRenderer.send('open-window', url),
   reload: () => ipcRenderer.send('reload-window'),
   // tray ipc
-  setTrayIcon: (dataURL: string) => ipcRenderer.send('set-tray-icon', dataURL),
+  setTrayIcon: (url: string, dataURL: string) =>
+    ipcRenderer.send('set-tray-icon', url, dataURL),
 });
