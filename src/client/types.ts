@@ -3,5 +3,6 @@ export type IData = {
   hostname?: string;
   title?: string;
   icon?: string;
+  favicon?: string;
   manifest?: string;
 };

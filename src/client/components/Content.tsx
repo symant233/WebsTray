@@ -15,7 +15,7 @@ function ContentItem({ item }: IContentItemProps) {
       onClick={() => window.electron.openWindow(item.url)}
     >
       <img
-        src={item?.icon || `https://${hostname}/favicon.ico`}
+        src={item?.icon || item?.favicon || `https://${hostname}/favicon.ico`}
         width={64}
         height={64}
         className="rounded-lg"

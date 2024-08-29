@@ -28,12 +28,15 @@ export default function TrayContent({ url }: Props) {
     const manifest = await webview.current.executeJavaScript(
       `document.querySelector('link[rel="manifest"]')?.href;`,
     );
+    const favicon = await webview.current.executeJavaScript(
+      `document.querySelector('link[rel*="icon"]')?.href;`,
+    );
     try {
       const data = await manifestHelper(manifest);
       if (!data.title) data.title = webTitle;
-      updateRecent(url, { manifest, ...data });
-      if (data.icon) {
-        const base64 = await convertImageToDataURL(data.icon);
+      updateRecent(url, { manifest, ...data, favicon });
+      if (favicon || data.icon) {
+        const base64 = await convertImageToDataURL(favicon || data.icon);
         window.electron.setTrayIcon(url, base64);
       }
     } catch (err) {
