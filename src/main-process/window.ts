@@ -1,8 +1,10 @@
 import { BrowserWindow, Menu, nativeImage, screen, Tray } from 'electron';
 import path from 'path';
 import { getPublicAsset, isCursorInside } from './helper';
+import ipcListener, { trayIpcListener } from './ipcListener';
 
 let mainWindowInstance: BrowserWindow | null;
+const trayMapper = new Map<string, [BrowserWindow, Tray]>();
 
 const icon = nativeImage.createFromPath(getPublicAsset('WebsTray.png'));
 
@@ -49,23 +51,37 @@ const options: Electron.BrowserWindowConstructorOptions = {
 };
 
 const createWindow = async (): Promise<BrowserWindow> => {
-  const mainWindow = new BrowserWindow({
-    width: 600,
-    height: 680,
-    ...options,
-  });
+  if (mainWindowInstance) {
+    mainWindowInstance.show();
+  } else {
+    const mainWindow = new BrowserWindow({
+      width: 600,
+      height: 680,
+      ...options,
+    });
 
-  await _loadApp(mainWindow);
-  mainWindowInstance = mainWindow;
-  mainWindow.once('closed', () => {
-    mainWindowInstance = null;
-  });
-  return mainWindow;
+    await _loadApp(mainWindow);
+    mainWindowInstance = mainWindow;
+    const remover = ipcListener(mainWindow);
+    mainWindow.once('closed', () => {
+      remover();
+      mainWindowInstance = null;
+    });
+  }
+  return mainWindowInstance;
 };
 
 const createTrayWindow = async (
   url: string,
 ): Promise<[BrowserWindow, Tray]> => {
+  const mapper = trayMapper.get(url);
+  if (mapper) {
+    const [trayWindow, tray] = mapper;
+    trayWindow.show();
+    _setPosition(trayWindow, tray);
+    return mapper;
+  }
+
   const tray = new Tray(icon);
   const trayWindow = new BrowserWindow({
     width: 430,
@@ -78,8 +94,11 @@ const createTrayWindow = async (
   _setPosition(trayWindow, tray);
 
   await _loadApp(trayWindow, url);
+  const remover = trayIpcListener(url, tray);
   trayWindow.once('closed', () => {
+    remover();
     tray.destroy();
+    trayMapper.delete(url);
   });
 
   // visibility part
@@ -103,7 +122,7 @@ const createTrayWindow = async (
     {
       label: 'Main Window',
       click: () => {
-        mainWindowInstance ? mainWindowInstance.focus() : createWindow();
+        createWindow();
       },
     },
     {
@@ -142,6 +161,7 @@ const createTrayWindow = async (
   ]);
   tray.setContextMenu(contextMenu);
 
+  trayMapper.set(url, [trayWindow, tray]);
   return [trayWindow, tray];
 };
 

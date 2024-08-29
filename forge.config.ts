@@ -15,7 +15,11 @@ const config: ForgeConfig = {
   },
   rebuildConfig: {},
   makers: [
-    new MakerSquirrel({}),
+    new MakerSquirrel({
+      iconUrl:
+        'https://raw.githubusercontent.com/symant233/WebsTray/master/public/WebsTray.ico',
+      noDelta: true,
+    }),
     new MakerZIP({}, ['darwin']),
     new MakerRpm({}),
     new MakerDeb({}),

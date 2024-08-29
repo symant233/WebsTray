@@ -3,6 +3,11 @@
 import { contextBridge, ipcRenderer } from 'electron';
 
 contextBridge.exposeInMainWorld('electron', {
+  // mainWindow ipc
   minimize: () => ipcRenderer.send('minimize-window'),
   openWindow: (url: string) => ipcRenderer.send('open-window', url),
+  reload: () => ipcRenderer.send('reload-window'),
+  // tray ipc
+  setTrayIcon: (url: string, dataURL: string) =>
+    ipcRenderer.send('set-tray-icon', url, dataURL),
 });

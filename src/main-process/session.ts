@@ -6,4 +6,12 @@ export default function sessionHandler() {
     details.requestHeaders['User-Agent'] = userAgent;
     callback({ requestHeaders: details.requestHeaders });
   });
+
+  session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
+    const headers = details.responseHeaders;
+    delete headers['access-control-allow-origin'];
+    delete headers['Access-Control-Allow-Origin'];
+    headers['Access-Control-Allow-Origin'] = ['*'];
+    callback({ responseHeaders: headers });
+  });
 }

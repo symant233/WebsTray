@@ -1,8 +1,8 @@
 {
   "name": "webs-tray",
-  "productName": "webs-tray",
-  "version": "1.0.0-rc1",
-  "description": "My Electron application description",
+  "productName": "WebsTray",
+  "version": "1.0.0",
+  "description": "WebsTray allows you to pin any web apps to system tray.",
   "private": true,
   "main": ".vite/build/main.js",
   "scripts": {

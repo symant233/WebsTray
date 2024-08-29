@@ -1,7 +1,7 @@
 # WebsTray
 
 <p align="center">
-  <img src="public/WebsTray.png" alt="描述" width="50" height="50">
+  <img src="public/WebsTray.png" alt="描述" width="60" height="60">
 </p>
 
 Inspired by _WebStay_. **WebsTray** allows you to pin any web apps to system tray.
@@ -13,7 +13,10 @@ Inspired by _WebStay_. **WebsTray** allows you to pin any web apps to system tra
 ## Develop References
 
 ```bash
-ELECTRON_MIRROR="https://npmmirror.com/mirrors/electron/"
+npm run dev # start dev application
+
+npm run package # package into a platform-specific executable bundle
+npm make # make distributables (installer)
 ```
 
 - https://www.electronforge.io/
@@ -21,7 +24,6 @@ ELECTRON_MIRROR="https://npmmirror.com/mirrors/electron/"
 - https://www.electronjs.org/zh/docs/latest/api/app
 - https://www.electronjs.org/zh/docs/latest/api/tray
 - https://www.electronjs.org/zh/docs/latest/api/menu-item
-- https://www.electronjs.org/zh/docs/latest/api/app
 - https://www.electronjs.org/zh/docs/latest/api/webview-tag
 - https://github.com/pmndrs/zustand
 
