@@ -4,6 +4,7 @@ import { getPublicAsset, isCursorInside } from './helper';
 import ipcListener from './ipcListener';
 
 let mainWindowInstance: BrowserWindow | null;
+const trayMapper = new Map<string, [BrowserWindow, Tray]>();
 
 const icon = nativeImage.createFromPath(getPublicAsset('WebsTray.png'));
 
@@ -73,6 +74,14 @@ const createWindow = async (): Promise<BrowserWindow> => {
 const createTrayWindow = async (
   url: string,
 ): Promise<[BrowserWindow, Tray]> => {
+  const mapper = trayMapper.get(url);
+  if (mapper) {
+    const [trayWindow, tray] = mapper;
+    trayWindow.show();
+    _setPosition(trayWindow, tray);
+    return mapper;
+  }
+
   const tray = new Tray(icon);
   const trayWindow = new BrowserWindow({
     width: 430,
@@ -87,6 +96,7 @@ const createTrayWindow = async (
   await _loadApp(trayWindow, url);
   trayWindow.once('closed', () => {
     tray.destroy();
+    trayMapper.delete(url);
   });
 
   // visibility part
@@ -149,6 +159,7 @@ const createTrayWindow = async (
   ]);
   tray.setContextMenu(contextMenu);
 
+  trayMapper.set(url, [trayWindow, tray]);
   return [trayWindow, tray];
 };
 
