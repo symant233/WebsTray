@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { appIconBase64 } from '../../constant';
 
 type Props = {
@@ -16,12 +16,14 @@ export default function LazyImage({
 }: Props) {
   const [source, setSource] = useState(appIconBase64);
 
-  const onlineImg = document.createElement('img');
-  onlineImg.src = src;
+  useEffect(() => {
+    const onlineImg = document.createElement('img');
+    onlineImg.src = src;
 
-  onlineImg.onload = () => {
-    setSource(src);
-  };
+    onlineImg.onload = () => {
+      setSource(src);
+    };
+  }, []);
 
   return <img width={width} height={height} src={source} {...props} />;
 }
