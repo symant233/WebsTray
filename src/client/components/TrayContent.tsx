@@ -11,6 +11,7 @@ import manifestHelper from '../utils/manifestHelper';
 import useDataStore from '../hooks/useDataStore';
 import DevLabel from './common/DevLabel';
 import { convertImageToDataURL } from '../utils/imageConverter';
+import type { IData } from '../types';
 
 type Props = {
   url: string;
@@ -20,11 +21,14 @@ export default function TrayContent({ url }: Props) {
   const webview = useRef<WebviewTag>(null);
   const [title, setTitle] = useState(url);
 
+  const current: IData = useDataStore((state) => state.getRecent(url));
   const updateRecent = useDataStore((state) => state.updateRecent);
 
   async function handleManifest() {
     const webTitle = webview.current?.getTitle();
     setTitle(webTitle);
+    if (current.manifest) return;
+    // * start of manifest handler
     const manifest = await webview.current.executeJavaScript(
       `document.querySelector('link[rel="manifest"]')?.href;`,
     );
