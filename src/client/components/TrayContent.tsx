@@ -27,7 +27,6 @@ export default function TrayContent({ url }: Props) {
   async function handleManifest() {
     const webTitle = webview.current?.getTitle();
     setTitle(webTitle);
-    if (current.manifest) return;
     // * start of manifest handler
     const manifest = await webview.current.executeJavaScript(
       `document.querySelector('link[rel="manifest"]')?.href;`,
@@ -36,17 +35,21 @@ export default function TrayContent({ url }: Props) {
       `document.querySelector('link[rel*="icon"]')?.href;`,
     );
     try {
-      const data = await manifestHelper(manifest);
-      if (!data.title) data.title = webTitle;
-      updateRecent(url, { manifest, ...data, favicon });
-      if (favicon || data.altIcon) {
-        const base64 = await convertImageToDataURL(favicon || data.altIcon);
+      let altIcon = current.altIcon;
+      if (!current.icon) {
+        const data = await manifestHelper(manifest);
+        if (!data.title) data.title = webTitle;
+        altIcon = data.altIcon;
+        updateRecent(url, { manifest, ...data, favicon });
+      }
+      if (favicon || altIcon) {
+        const base64 = await convertImageToDataURL(favicon || altIcon);
         window.electron.setTrayIcon(url, base64);
       }
     } catch (err) {
       console.error('TrayContent', err);
     }
-    window.electron.reload();
+    if (!current.icon) window.electron.reload();
   }
 
   useEffect(() => {
