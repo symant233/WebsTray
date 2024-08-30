@@ -1,7 +1,8 @@
-import { appIconBase64 } from '../constant';
 import useDataStore from '../hooks/useDataStore';
 import type { IData } from '../types';
 import getHostname from '../utils/getHostname';
+import LazyImage from './common/LazyImage';
+import MenuContext from './common/MenuContext';
 
 type IContentItemProps = {
   item: IData;
@@ -9,24 +10,39 @@ type IContentItemProps = {
 
 function ContentItem({ item }: IContentItemProps) {
   const hostname = getHostname(item.url);
+  const iconURL =
+    item?.icon ||
+    item?.altIcon ||
+    item.favicon ||
+    `https://${hostname}/favicon.ico`;
+
   return (
     <div
       className="hover:bg-gray-200 rounded-lg flex flex-col items-center justify-center p-4 gap-2 cursor-pointer"
       onClick={() => window.electron.openWindow(item.url)}
     >
-      <img
-        src={item?.icon || item?.altIcon || `https://${hostname}/favicon.ico`}
-        width={64}
-        height={64}
-        className="rounded-lg"
-        onError={(e) => {
-          e.currentTarget.src = appIconBase64;
-        }}
-      />
+      <LazyImage src={iconURL} width={64} height={64} className="rounded-lg" />
       <span className="w-20 overflow-hidden overflow-ellipsis text-nowrap whitespace-nowrap text-center">
         {item?.title || hostname}
       </span>
     </div>
+  );
+}
+
+function MenuContextItem({ item }: IContentItemProps) {
+  const removeRecent = useDataStore((state) => state.removeRecent);
+
+  const menu = [
+    {
+      text: '删除',
+      cb: () => removeRecent(item),
+    },
+  ];
+
+  return (
+    <MenuContext context={menu}>
+      <ContentItem item={item} />
+    </MenuContext>
   );
 }
 
@@ -40,7 +56,7 @@ export default function Content() {
       <div className="flex flex-row flex-wrap gap-1">
         {recent.length ? (
           recent.map((i) => {
-            return <ContentItem item={i} key={i.url} />;
+            return <MenuContextItem item={i} key={i.url} />;
           })
         ) : (
           <p className="font-bold text-gray-500 pb-2">
@@ -53,7 +69,7 @@ export default function Content() {
       <div className="flex flex-row flex-wrap gap-1">
         {favorite.length ? (
           favorite.map((i) => {
-            return <ContentItem item={i} key={i.url} />;
+            return <MenuContextItem item={i} key={i.url} />;
           })
         ) : (
           <p className="font-bold text-gray-500">
