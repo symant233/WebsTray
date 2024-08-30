@@ -2,6 +2,7 @@ import useDataStore from '../hooks/useDataStore';
 import type { IData } from '../types';
 import getHostname from '../utils/getHostname';
 import LazyImage from './common/LazyImage';
+import MenuContext from './common/MenuContext';
 
 type IContentItemProps = {
   item: IData;
@@ -28,6 +29,23 @@ function ContentItem({ item }: IContentItemProps) {
   );
 }
 
+function MenuContextItem({ item }: IContentItemProps) {
+  const removeRecent = useDataStore((state) => state.removeRecent);
+
+  const menu = [
+    {
+      text: '删除',
+      cb: () => removeRecent(item),
+    },
+  ];
+
+  return (
+    <MenuContext context={menu}>
+      <ContentItem item={item} />
+    </MenuContext>
+  );
+}
+
 export default function Content() {
   const recent = useDataStore((state) => state.recent);
   const favorite = useDataStore((state) => state.favorite);
@@ -38,7 +56,7 @@ export default function Content() {
       <div className="flex flex-row flex-wrap gap-1">
         {recent.length ? (
           recent.map((i) => {
-            return <ContentItem item={i} key={i.url} />;
+            return <MenuContextItem item={i} key={i.url} />;
           })
         ) : (
           <p className="font-bold text-gray-500 pb-2">
@@ -51,7 +69,7 @@ export default function Content() {
       <div className="flex flex-row flex-wrap gap-1">
         {favorite.length ? (
           favorite.map((i) => {
-            return <ContentItem item={i} key={i.url} />;
+            return <MenuContextItem item={i} key={i.url} />;
           })
         ) : (
           <p className="font-bold text-gray-500">

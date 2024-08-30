@@ -8,6 +8,7 @@ interface State {
   addRecent: (value: IData) => void;
   clearRecent: () => void;
   updateRecent: (url: string, obj: Partial<IData>) => void;
+  removeRecent: (value: IData) => void;
 }
 
 const useDataStore = create<State>()(
@@ -25,6 +26,13 @@ const useDataStore = create<State>()(
             return r;
           }),
         })),
+      removeRecent: (value: IData) => {
+        set((state) => ({
+          recent: state.recent.filter((r) => {
+            return r !== value;
+          }),
+        }));
+      },
     }),
     {
       name: 'webs-tray-storage',
