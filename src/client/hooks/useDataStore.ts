@@ -5,6 +5,7 @@ import type { IData } from '../types';
 interface State {
   recent: IData[];
   favorite: IData[];
+  getRecent: (url: string) => IData;
   addRecent: (value: IData) => void;
   clearRecent: () => void;
   updateRecent: (url: string, obj: Partial<IData>) => void;
@@ -13,9 +14,12 @@ interface State {
 
 const useDataStore = create<State>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       recent: [],
       favorite: [],
+      getRecent: (url: string) => {
+        return get().recent.find((data) => data.url === url);
+      },
       addRecent: (value: IData) =>
         set((state) => ({ recent: [...state.recent, value] })),
       clearRecent: () => set({ recent: [] }),

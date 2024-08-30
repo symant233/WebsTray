@@ -6,6 +6,11 @@ import session from './main-process/session';
 if (require('electron-squirrel-startup')) {
   app.quit();
 }
+
+if (!app.requestSingleInstanceLock()) {
+  app.quit(); // quit duplicated main process
+}
+
 app.commandLine.appendSwitch('wm-window-animations-disabled'); // stop flicker
 
 // This method will be called when Electron has finished
@@ -31,6 +36,10 @@ app.on('activate', () => {
   if (BrowserWindow.getAllWindows().length === 0) {
     createWindow();
   }
+});
+
+app.on('second-instance', () => {
+  createWindow();
 });
 
 // In this file you can include the rest of your app's specific main process

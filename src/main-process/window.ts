@@ -77,8 +77,8 @@ const createTrayWindow = async (
   const mapper = trayMapper.get(url);
   if (mapper) {
     const [trayWindow, tray] = mapper;
-    trayWindow.show();
     _setPosition(trayWindow, tray);
+    trayWindow.show();
     return mapper;
   }
 
@@ -106,8 +106,8 @@ const createTrayWindow = async (
     if (trayWindow.isVisible()) {
       trayWindow.hide();
     } else {
-      trayWindow.show();
       _setPosition(trayWindow, tray);
+      trayWindow.show();
     }
   });
   trayWindow.on('blur', () => {
@@ -147,8 +147,8 @@ const createTrayWindow = async (
       click: (e: Electron.MenuItem) => {
         trayWindow.setAlwaysOnTop(e.checked);
         if (e.checked) {
-          trayWindow.show();
           _setPosition(trayWindow, tray);
+          trayWindow.show();
         }
       },
     },
