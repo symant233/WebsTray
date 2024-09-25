@@ -1,9 +1,9 @@
-import Icon from '@mdi/react';
+import { Icon } from '@mdi/react';
 import { mdiLink } from '@mdi/js';
 import { useRef } from 'react';
-import urlValidator from '../utils/urlValidator';
-import getHostname from '../utils/getHostname';
-import useDataStore from '../hooks/useDataStore';
+import urlValidator from '@client/utils/urlValidator';
+import getHostname from '@client/utils/getHostname';
+import useDataStore from '@client/hooks/useDataStore';
 
 export default function AppInput() {
   const inputRef = useRef<HTMLInputElement>(null);

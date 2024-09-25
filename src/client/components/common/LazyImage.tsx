@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { appIconBase64 } from '../../constant';
+import { appIconBase64 } from '@client/constant';
 
 type Props = {
   src: string;

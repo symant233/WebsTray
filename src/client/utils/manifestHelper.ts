@@ -1,5 +1,5 @@
-import { fetchJsonData } from '../services/api';
-import { IData } from '../types';
+import { fetchJsonData } from '@client/services/api';
+import { IData } from '@client/types';
 import getHostname from './getHostname';
 
 export type IManifest = {

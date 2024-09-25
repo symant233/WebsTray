@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import type { IData } from '../types';
+import type { IData } from '@client/types';
 
 interface State {
   recent: IData[];

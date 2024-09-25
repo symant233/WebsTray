@@ -7,11 +7,11 @@ import {
   HomeButton,
   RefreshButton,
 } from './common/IconButtons';
-import manifestHelper from '../utils/manifestHelper';
-import useDataStore from '../hooks/useDataStore';
+import manifestHelper from '@client/utils/manifestHelper';
+import useDataStore from '@client/hooks/useDataStore';
 import DevLabel from './common/DevLabel';
-import { convertImageToDataURL } from '../utils/imageConverter';
-import type { IData } from '../types';
+import { convertImageToDataURL } from '@client/utils/imageConverter';
+import type { IData } from '@client/types';
 
 type Props = {
   url: string;

@@ -1,5 +1,5 @@
 import { memo } from 'react';
-import Icon from '@mdi/react';
+import { Icon } from '@mdi/react';
 import { mdiMinus } from '@mdi/js';
 import { CloseButton } from './common/IconButtons';
 import DevLabel from './common/DevLabel';
