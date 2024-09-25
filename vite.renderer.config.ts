@@ -21,6 +21,7 @@ export default defineConfig((env) => {
       preserveSymlinks: true,
       alias: {
         '@': path.resolve(__dirname, './src'),
+        '@client': path.resolve(__dirname, 'src/client'),
       },
     },
     clearScreen: false,
