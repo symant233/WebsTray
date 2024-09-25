@@ -21,8 +21,8 @@ export default function TrayContent({ url }: Props) {
   const webview = useRef<WebviewTag>(null);
   const [title, setTitle] = useState(url);
 
-  const current: IData = useDataStore((state) => state.getRecent(url));
-  const updateRecent = useDataStore((state) => state.updateRecent);
+  const current: IData = useDataStore((state) => state.getData(url));
+  const updater = useDataStore((state) => state.updater);
 
   async function handleManifest() {
     const webTitle = webview.current?.getTitle();
@@ -40,7 +40,7 @@ export default function TrayContent({ url }: Props) {
         const data = await manifestHelper(manifest);
         if (!data.title) data.title = webTitle;
         altIcon = data.altIcon;
-        updateRecent(url, { manifest, ...data, favicon });
+        updater(url, { manifest, ...data, favicon });
       }
       if (favicon || altIcon) {
         const base64 = await convertImageToDataURL(favicon || altIcon);

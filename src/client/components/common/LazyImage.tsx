@@ -25,5 +25,13 @@ export default function LazyImage({
     };
   }, []);
 
-  return <img width={width} height={height} src={source} {...props} />;
+  return (
+    <img
+      width={width}
+      height={height}
+      src={source}
+      {...props}
+      draggable="false"
+    />
+  );
 }

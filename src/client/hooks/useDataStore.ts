@@ -5,11 +5,12 @@ import type { IData } from '../types';
 interface State {
   recent: IData[];
   favorite: IData[];
-  getRecent: (url: string) => IData;
+  getData: (url: string) => IData;
   addRecent: (value: IData) => void;
-  clearRecent: () => void;
-  updateRecent: (url: string, obj: Partial<IData>) => void;
+  addFavorite: (value: IData) => void;
+  updater: (url: string, obj: Partial<IData>) => void;
   removeRecent: (value: IData) => void;
+  removeFavorite: (value: IData) => void;
 }
 
 const useDataStore = create<State>()(
@@ -17,15 +18,28 @@ const useDataStore = create<State>()(
     (set, get) => ({
       recent: [],
       favorite: [],
-      getRecent: (url: string) => {
-        return get().recent.find((data) => data.url === url);
+      getData: (url: string) => {
+        return (
+          get().favorite.find((data) => data.url === url) ||
+          get().recent.find((data) => data.url === url)
+        );
       },
       addRecent: (value: IData) =>
         set((state) => ({ recent: [...state.recent, value] })),
-      clearRecent: () => set({ recent: [] }),
-      updateRecent: (url: string, obj: Partial<IData>) =>
+      addFavorite: (value: IData) =>
+        set((state) => ({
+          favorite: [...state.favorite, value],
+          recent: state.recent.filter((r) => {
+            return r !== value;
+          }), // addFavorite removes recent
+        })),
+      updater: (url: string, obj: Partial<IData>) =>
         set((state) => ({
           recent: state.recent.map((r) => {
+            if (url === r.url) return { ...r, ...obj };
+            return r;
+          }),
+          favorite: state.favorite.map((r) => {
             if (url === r.url) return { ...r, ...obj };
             return r;
           }),
@@ -33,6 +47,13 @@ const useDataStore = create<State>()(
       removeRecent: (value: IData) => {
         set((state) => ({
           recent: state.recent.filter((r) => {
+            return r !== value;
+          }),
+        }));
+      },
+      removeFavorite: (value: IData) => {
+        set((state) => ({
+          favorite: state.favorite.filter((r) => {
             return r !== value;
           }),
         }));
