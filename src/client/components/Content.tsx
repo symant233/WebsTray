@@ -18,7 +18,7 @@ function ContentItem({ item }: IContentItemProps) {
 
   return (
     <div
-      className="hover:bg-gray-100 rounded-lg flex flex-col items-center justify-center p-4 gap-2 cursor-pointer active:bg-gray-200"
+      className="hover:bg-gray-100 rounded-lg flex flex-col items-center justify-center p-4 gap-2 cursor-pointer active:bg-gray-200 transition-colors"
       onClick={() => window.electron.openWindow(item.url)}
     >
       <LazyImage src={iconURL} width={64} height={64} className="rounded-lg" />

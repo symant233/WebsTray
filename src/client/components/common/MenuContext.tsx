@@ -53,7 +53,7 @@ export default function MenuContext({ children, context }: Props) {
                     setShowContext(false);
                     i.cb();
                   }}
-                  className="p-2 hover:bg-gray-100 rounded-lg text-sm w-32 cursor-pointer"
+                  className="p-2 hover:bg-gray-100 active:bg-gray-200 rounded-lg text-sm w-32 cursor-pointer transition-colors"
                   key={i.text}
                 >
                   {i.text}
