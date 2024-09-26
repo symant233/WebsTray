@@ -26,7 +26,7 @@ export default function AppInput() {
       <input
         type="url"
         name="url"
-        className="w-full text-sm p-1"
+        className="w-full text-sm p-1 focus-visible:outline-none"
         placeholder="Enter URL to Start"
         ref={inputRef}
         onKeyUp={handleEnter}

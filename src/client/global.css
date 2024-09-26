@@ -9,7 +9,3 @@
 .no-drag {
   -webkit-app-region: no-drag;
 }
-
-input {
-  all: unset;
-}

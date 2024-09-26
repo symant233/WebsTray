@@ -41,7 +41,7 @@ export default function MenuContext({ children, context }: Props) {
       {children}
       {showContext && (
         <div
-          className="absolute bg-white rounded-lg p-2 shadow-lg border-solid border z-50"
+          className="fixed bg-white rounded-lg p-2 shadow-lg border-solid border z-50"
           style={{ top: point.y, left: point.x }}
           ref={insideRef}
         >
