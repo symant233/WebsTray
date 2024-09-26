@@ -1,13 +1,14 @@
 import useDataStore from '@client/hooks/useDataStore';
 import MenuContextItem from './MenuContextItem';
 import ContentItem from './ContentItem';
+import Setting from './Setting';
 
 export default function Content() {
   const recent = useDataStore((state) => state.recent);
   const favorite = useDataStore((state) => state.favorite);
 
   return (
-    <div className="w-full h-full p-6 select-none gap-2">
+    <div className="w-full h-full p-6 select-none gap-2 relative">
       <div className="font-bold text-lg my-2">Favorite</div>
       <div className="flex flex-row flex-wrap gap-1">
         {favorite.length ? (
@@ -41,6 +42,8 @@ export default function Content() {
           </p>
         )}
       </div>
+
+      <Setting></Setting>
     </div>
   );
 }

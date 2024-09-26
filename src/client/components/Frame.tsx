@@ -12,7 +12,7 @@ const Frame = ({ children }: Props) => {
   return (
     <div
       id="frame"
-      className="select-none w-full h-14 flex flex-row items-center bg-gray-50 border border-solid p-4 justify-between shadow-sm"
+      className="select-none w-full h-14 flex flex-row items-center bg-gray-50 border border-solid p-4 justify-between shadow-sm z-50"
     >
       <div className="font-bold text-sm mx-2 cursor-grab active:cursor-grabbing">
         WebsTray
