@@ -8,6 +8,7 @@ export interface IElectronAPI {
   // tray ipc
   setTrayIcon: (url: string, dataURL: string) => void;
   openExternal: (url: string) => void;
+  setProxy: (proxy: stirng) => void;
 }
 
 declare global {

@@ -1,4 +1,11 @@
-import { BrowserWindow, ipcMain, nativeImage, Tray, shell } from 'electron';
+import {
+  BrowserWindow,
+  ipcMain,
+  nativeImage,
+  Tray,
+  shell,
+  session,
+} from 'electron';
 import { createTrayWindow } from './window';
 
 const ipcListener = (window: BrowserWindow): (() => void) => {
@@ -13,6 +20,20 @@ const ipcListener = (window: BrowserWindow): (() => void) => {
   });
   ipcMain.on('open-external', (_, url: string) => {
     shell.openExternal(url);
+  });
+  ipcMain.on('set-proxy', (_, proxy: string) => {
+    if (proxy === 'system') {
+      session.defaultSession.setProxy({
+        mode: proxy,
+        proxyBypassRules: 'localhost',
+      });
+    } else {
+      session.defaultSession.setProxy({
+        proxyRules: proxy,
+        proxyBypassRules: 'localhost',
+      });
+    }
+    console.log(`[ipcListener.ts]: setting proxy ${proxy}`);
   });
 
   return () => {

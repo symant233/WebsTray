@@ -12,7 +12,8 @@ const GeneralSetting: React.FC<Props> = ({ config, setConfig }) => {
 
       <div className="px-4 flex flex-col *:p-2">
         <div className="font-bold before:content-['#'] before:pr-2">
-          Proxy Setting
+          Proxy Setting&nbsp;
+          <span className="text-gray-500 text-sm">(restart to apply)</span>
         </div>
         <div>
           <input
@@ -48,7 +49,7 @@ const GeneralSetting: React.FC<Props> = ({ config, setConfig }) => {
             checked={!!config.proxy && config.proxy !== 'system'}
             className="ml-4 mr-2 inline-block"
             onClick={() =>
-              setConfig({ ...config, proxy: 'socks5:127.0.0.1:1080' })
+              setConfig({ ...config, proxy: `socks://127.0.0.1:1080` })
             }
             readOnly
           />

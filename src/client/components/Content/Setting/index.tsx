@@ -25,7 +25,6 @@ export default function Setting(): React.ReactNode {
   ];
 
   const handleAccept = () => {
-    console.log(config, tmpConfig);
     setConfig(tmpConfig);
     setOpen(false);
   };
