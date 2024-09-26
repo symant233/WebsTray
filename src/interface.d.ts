@@ -7,6 +7,7 @@ export interface IElectronAPI {
   reload: () => void;
   // tray ipc
   setTrayIcon: (url: string, dataURL: string) => void;
+  openExternal: (url: string) => void;
 }
 
 declare global {
