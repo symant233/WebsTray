@@ -4,7 +4,7 @@ import DevLabel from '@client/components/common/DevLabel';
 
 const AboutSetting = () => {
   return (
-    <div className="w-full">
+    <div className="w-full mt-2">
       <div className="p-4 text-lg font-bold">About</div>
       <img
         src={appIconBase64}
@@ -12,7 +12,7 @@ const AboutSetting = () => {
         draggable="false"
       ></img>
       <p className="text-lg text-center w-full p-2 font-bold">WebsTray</p>
-      <div className="p-4 *:pb-2">
+      <div className="p-4 *:pb-4">
         <p>
           <strong>Author:&nbsp;</strong>
           <span

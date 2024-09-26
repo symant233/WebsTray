@@ -17,7 +17,7 @@ export default function Tabs({ options, onChange }: Props) {
 
   return (
     <>
-      <div className="text-base p-3 h-full min-h-10 flex flex-col gap-2 border-r select-none">
+      <div className="text-base p-3 h-full min-h-10 flex flex-col gap-2 border-r select-none pt-5 shadow-sm">
         {options &&
           options.map((i) => {
             return (

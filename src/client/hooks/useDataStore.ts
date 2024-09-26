@@ -2,6 +2,10 @@ import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import type { IData } from '@client/types';
 
+type IConfig = {
+  proxy?: 'system' | string;
+};
+
 interface State {
   recent: IData[];
   favorite: IData[];
@@ -11,6 +15,7 @@ interface State {
   updater: (url: string, obj: Partial<IData>) => void;
   removeRecent: (value: IData) => void;
   removeFavorite: (value: IData) => void;
+  config: IConfig;
 }
 
 const useDataStore = create<State>()(
@@ -57,6 +62,10 @@ const useDataStore = create<State>()(
             return r !== value;
           }),
         }));
+      },
+      config: {},
+      setConfig: (value: IConfig) => {
+        set((_) => ({ config: value }));
       },
     }),
     {
