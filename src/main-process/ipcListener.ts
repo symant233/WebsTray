@@ -1,4 +1,11 @@
-import { BrowserWindow, ipcMain, nativeImage, Tray } from 'electron';
+import {
+  BrowserWindow,
+  ipcMain,
+  nativeImage,
+  Tray,
+  shell,
+  session,
+} from 'electron';
 import { createTrayWindow } from './window';
 
 const ipcListener = (window: BrowserWindow): (() => void) => {
@@ -11,11 +18,29 @@ const ipcListener = (window: BrowserWindow): (() => void) => {
   ipcMain.on('reload-window', () => {
     window.reload();
   });
+  ipcMain.on('open-external', (_, url: string) => {
+    shell.openExternal(url);
+  });
+  ipcMain.on('set-proxy', (_, proxy: string) => {
+    if (proxy === 'system') {
+      session.defaultSession.setProxy({
+        mode: proxy,
+        proxyBypassRules: 'localhost',
+      });
+    } else {
+      session.defaultSession.setProxy({
+        proxyRules: proxy,
+        proxyBypassRules: 'localhost',
+      });
+    }
+    console.log(`[ipcListener.ts]: setting proxy ${proxy}`);
+  });
 
   return () => {
     ipcMain.removeAllListeners('minimize-window');
     ipcMain.removeAllListeners('open-window');
     ipcMain.removeAllListeners('reload-window');
+    ipcMain.removeAllListeners('open-external');
   };
   // * required to update preload.ts after modification
 };

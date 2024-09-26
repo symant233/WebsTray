@@ -41,7 +41,7 @@ export default function MenuContext({ children, context }: Props) {
       {children}
       {showContext && (
         <div
-          className="absolute bg-white rounded-lg p-2 shadow-lg border-solid border z-50"
+          className="fixed bg-white rounded-lg p-2 shadow-lg border-solid border z-50"
           style={{ top: point.y, left: point.x }}
           ref={insideRef}
         >
@@ -53,7 +53,7 @@ export default function MenuContext({ children, context }: Props) {
                     setShowContext(false);
                     i.cb();
                   }}
-                  className="p-2 hover:bg-gray-100 rounded-lg text-sm w-32 cursor-pointer"
+                  className="p-2 hover:bg-gray-100 active:bg-gray-200 rounded-lg text-sm w-32 cursor-pointer transition-colors"
                   key={i.text}
                 >
                   {i.text}

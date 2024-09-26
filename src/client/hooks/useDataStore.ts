@@ -1,15 +1,22 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import type { IData } from '../types';
+import type { IData } from '@client/types';
+
+export type IConfig = {
+  proxy: '' | 'system' | string;
+};
 
 interface State {
   recent: IData[];
   favorite: IData[];
-  getRecent: (url: string) => IData;
+  getData: (url: string) => IData;
   addRecent: (value: IData) => void;
-  clearRecent: () => void;
-  updateRecent: (url: string, obj: Partial<IData>) => void;
+  addFavorite: (value: IData) => void;
+  updater: (url: string, obj: Partial<IData>) => void;
   removeRecent: (value: IData) => void;
+  removeFavorite: (value: IData) => void;
+  config: IConfig;
+  setConfig: (value: IConfig) => void;
 }
 
 const useDataStore = create<State>()(
@@ -17,15 +24,28 @@ const useDataStore = create<State>()(
     (set, get) => ({
       recent: [],
       favorite: [],
-      getRecent: (url: string) => {
-        return get().recent.find((data) => data.url === url);
+      getData: (url: string) => {
+        return (
+          get().favorite.find((data) => data.url === url) ||
+          get().recent.find((data) => data.url === url)
+        );
       },
       addRecent: (value: IData) =>
         set((state) => ({ recent: [...state.recent, value] })),
-      clearRecent: () => set({ recent: [] }),
-      updateRecent: (url: string, obj: Partial<IData>) =>
+      addFavorite: (value: IData) =>
+        set((state) => ({
+          favorite: [...state.favorite, value],
+          recent: state.recent.filter((r) => {
+            return r !== value;
+          }), // addFavorite removes recent
+        })),
+      updater: (url: string, obj: Partial<IData>) =>
         set((state) => ({
           recent: state.recent.map((r) => {
+            if (url === r.url) return { ...r, ...obj };
+            return r;
+          }),
+          favorite: state.favorite.map((r) => {
             if (url === r.url) return { ...r, ...obj };
             return r;
           }),
@@ -37,6 +57,17 @@ const useDataStore = create<State>()(
           }),
         }));
       },
+      removeFavorite: (value: IData) => {
+        set((state) => ({
+          favorite: state.favorite.filter((r) => {
+            return r !== value;
+          }),
+        }));
+      },
+      config: { proxy: '' },
+      setConfig: (value: IConfig) => {
+        set((_) => ({ config: value }));
+      },
     }),
     {
       name: 'webs-tray-storage',
@@ -44,6 +75,7 @@ const useDataStore = create<State>()(
       partialize: (state) => ({
         recent: state.recent,
         favorite: state.favorite,
+        config: state.config,
       }),
     },
   ),

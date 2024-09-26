@@ -1,6 +1,8 @@
 import { createRoot } from 'react-dom/client';
+import useDataStore from './hooks/useDataStore';
 import './global.css';
 
+import { useEffect } from 'react';
 import Frame from './components/Frame';
 import Content from './components/Content';
 import TrayContent from './components/TrayContent';
@@ -8,6 +10,14 @@ import AppInput from './components/AppInput';
 import useHotKey from './hooks/useHotkey';
 
 const App = () => {
+  const { proxy } = useDataStore((state) => state.config);
+
+  useEffect(() => {
+    if (proxy) {
+      window.electron.setProxy(proxy);
+    }
+  }, []);
+
   if (location.hash) {
     return <TrayContent url={location.hash.slice(1)} />;
   }

@@ -1,9 +1,9 @@
-import Icon from '@mdi/react';
+import { Icon } from '@mdi/react';
 import { mdiLink } from '@mdi/js';
 import { useRef } from 'react';
-import urlValidator from '../utils/urlValidator';
-import getHostname from '../utils/getHostname';
-import useDataStore from '../hooks/useDataStore';
+import urlValidator from '@client/utils/urlValidator';
+import getHostname from '@client/utils/getHostname';
+import useDataStore from '@client/hooks/useDataStore';
 
 export default function AppInput() {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -26,7 +26,7 @@ export default function AppInput() {
       <input
         type="url"
         name="url"
-        className="w-full text-sm p-1"
+        className="w-full text-sm p-1 focus-visible:outline-none"
         placeholder="Enter URL to Start"
         ref={inputRef}
         onKeyUp={handleEnter}

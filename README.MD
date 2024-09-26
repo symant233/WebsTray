@@ -28,6 +28,10 @@ npm make # make distributables (installer)
 - https://www.electronjs.org/zh/docs/latest/api/menu-item
 - https://www.electronjs.org/zh/docs/latest/api/webview-tag
 - https://github.com/pmndrs/zustand
+- https://materialdesignicons.com/
+- http://lublank.com/2019/12/14/electron-proxy/
+- https://www.electronjs.org/zh/docs/latest/api/session#sessetproxyconfig
+- https://js.electronforge.io/interfaces/_electron_forge_maker_squirrel.InternalOptions.Options.html
 
 APP Icon: [Figma/WebsTray](https://www.figma.com/design/ZU2hK5Z1rKUuyu092ukdga/WebsTray)
 

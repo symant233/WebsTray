@@ -1,12 +1,12 @@
 {
   "import": {
-    "scope": "javascript,typescript,typescriptreact",
+    "scope": "typescript,typescriptreact",
     "prefix": "im",
     "body": ["import { $2 } from '$1';"],
     "description": "Import a module"
   },
   "export-react": {
-    "scope": "javascriptreact,typescriptreact",
+    "scope": "typescriptreact",
     "prefix": "ex",
     "body": [
       "export default function $TM_FILENAME_BASE() {",
@@ -16,18 +16,18 @@
     "description": "export a function"
   },
   "export": {
-    "scope": "javascript,typescript",
+    "scope": "typescript",
     "prefix": "ex",
     "body": ["export default function $TM_FILENAME_BASE() {", "  $1", "}"],
     "description": "export a function"
   },
   "useEffect": {
-    "scope": "javascriptreact,typescriptreact",
+    "scope": "typescript,typescriptreact",
     "prefix": "ue",
     "body": ["useEffect(() => {", "  $1", "}, [])"]
   },
   "useState": {
-    "scope": "javascriptreact,typescriptreact",
+    "scope": "typescript,typescriptreact",
     "prefix": "us",
     "body": "const [$1, set${1/(.*)/${1:/capitalize}/}] = useState($2);"
   }

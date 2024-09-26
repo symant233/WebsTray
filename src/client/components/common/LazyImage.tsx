@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { appIconBase64 } from '../../constant';
+import { appIconBase64 } from '@client/constant';
 
 type Props = {
   src: string;
@@ -25,5 +25,13 @@ export default function LazyImage({
     };
   }, []);
 
-  return <img width={width} height={height} src={source} {...props} />;
+  return (
+    <img
+      width={width}
+      height={height}
+      src={source}
+      {...props}
+      draggable="false"
+    />
+  );
 }

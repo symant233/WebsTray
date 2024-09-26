@@ -10,4 +10,6 @@ contextBridge.exposeInMainWorld('electron', {
   // tray ipc
   setTrayIcon: (url: string, dataURL: string) =>
     ipcRenderer.send('set-tray-icon', url, dataURL),
+  openExternal: (url: string) => ipcRenderer.send('open-external', url),
+  setProxy: (proxy: string) => ipcRenderer.send('set-proxy', proxy),
 });
