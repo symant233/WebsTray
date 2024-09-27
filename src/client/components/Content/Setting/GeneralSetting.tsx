@@ -41,7 +41,7 @@ const GeneralSetting: React.FC<Props> = ({ config, setConfig }) => {
           <label htmlFor="proxy-system">System proxy</label>
         </div>
 
-        <div>
+        <div className="py-1">
           <input
             type="radio"
             id="proxy-custom"
@@ -55,7 +55,7 @@ const GeneralSetting: React.FC<Props> = ({ config, setConfig }) => {
           />
           <label htmlFor="proxy-custom">Custom</label>
           <input
-            className="border border-solid ml-2 shadow-sm rounded w-64 focus-within:outline-blue-300"
+            className="border border-solid ml-2 shadow-sm rounded w-64 focus-within:outline-blue-300 px-2 py-1"
             value={config.proxy === 'system' ? '' : config.proxy}
             onChange={(e) => setConfig({ ...config, proxy: e.target.value })}
             spellCheck={false}
