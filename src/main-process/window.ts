@@ -160,6 +160,7 @@ const createTrayWindow = async (
     },
   ]);
   tray.setContextMenu(contextMenu);
+  tray.setToolTip('WebsTray App');
 
   trayMapper.set(url, [trayWindow, tray]);
   return [trayWindow, tray];
