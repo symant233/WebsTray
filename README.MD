@@ -8,9 +8,23 @@ Inspired by _WebStay_. **WebsTray** allows you to pin any web apps to system tra
 
 Download latest production installer: [releases](https://github.com/symant233/WebsTray/releases/latest).
 
+<p align="center">
+  <img src="docs/assets/mainView.png" alt="mainView" width="300">
+  <img src="docs/assets/settings.png" alt="mainView" width="300">
+</p>
+
+<p align="center">
+  <img src="docs/assets/webstray_demo.gif" alt="mainView" width="700">
+</p>
+
 ## Features
 
 - Opensource, free to use or modify.
+
+### Todos:
+
+- [] Remember tray window size (handle resize event).
+- [] Screen offset when tray window overflow.
 
 ## Develop References
 
