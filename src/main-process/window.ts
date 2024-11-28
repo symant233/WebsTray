@@ -1,7 +1,12 @@
 import { BrowserWindow, Menu, nativeImage, screen, Tray } from 'electron';
 import path from 'path';
-import { getPublicAsset, isCursorInside } from './helper';
+import {
+  getPublicAsset,
+  isCursorInside,
+  setTrayWindowPosition,
+} from './helper';
 import ipcListener, { trayIpcListener } from './ipcListener';
+import { mainWindowBounds, trayWindowBounds } from './constant';
 
 let mainWindowInstance: BrowserWindow | null;
 const trayMapper = new Map<string, [BrowserWindow, Tray]>();
@@ -22,21 +27,6 @@ const _loadApp = async (window: BrowserWindow, url = '') => {
   }
 };
 
-const _setPosition = (window: BrowserWindow, tray: Tray) => {
-  const bounds = tray.getBounds();
-  const winBounds = window.getBounds();
-  const screenBounds = screen.getPrimaryDisplay().bounds;
-  if (bounds.x < 100) {
-    // on tray hide
-    bounds.x = screenBounds.width - winBounds.width / 2 - 50;
-    bounds.y = screenBounds.height - 50;
-  }
-  window.setPosition(
-    Math.floor(bounds.x - winBounds.width / 2 + bounds.width / 2),
-    Math.floor(bounds.y - winBounds.height - 4),
-  );
-};
-
 const options: Electron.BrowserWindowConstructorOptions = {
   webPreferences: {
     preload: path.join(__dirname, 'preload.js'),
@@ -55,8 +45,7 @@ const createWindow = async (): Promise<BrowserWindow> => {
     mainWindowInstance.show();
   } else {
     const mainWindow = new BrowserWindow({
-      width: 600,
-      height: 680,
+      ...mainWindowBounds,
       ...options,
     });
 
@@ -77,21 +66,20 @@ const createTrayWindow = async (
   const mapper = trayMapper.get(url);
   if (mapper) {
     const [trayWindow, tray] = mapper;
-    _setPosition(trayWindow, tray);
+    setTrayWindowPosition(trayWindow, tray);
     trayWindow.show();
     return mapper;
   }
 
   const tray = new Tray(icon);
   const trayWindow = new BrowserWindow({
-    width: 430,
-    height: 780,
+    ...trayWindowBounds,
     transparent: true,
     hiddenInMissionControl: true,
     skipTaskbar: true,
     ...options,
   });
-  _setPosition(trayWindow, tray);
+  setTrayWindowPosition(trayWindow, tray);
 
   await _loadApp(trayWindow, url);
   const remover = trayIpcListener(url, tray);
@@ -106,7 +94,7 @@ const createTrayWindow = async (
     if (trayWindow.isVisible()) {
       trayWindow.hide();
     } else {
-      _setPosition(trayWindow, tray);
+      setTrayWindowPosition(trayWindow, tray);
       trayWindow.show();
     }
   });
@@ -147,7 +135,7 @@ const createTrayWindow = async (
       click: (e: Electron.MenuItem) => {
         trayWindow.setAlwaysOnTop(e.checked);
         if (e.checked) {
-          _setPosition(trayWindow, tray);
+          setTrayWindowPosition(trayWindow, tray);
           trayWindow.show();
         }
       },

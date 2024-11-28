@@ -41,19 +41,26 @@ const ipcListener = (window: BrowserWindow): (() => void) => {
     ipcMain.removeAllListeners('open-window');
     ipcMain.removeAllListeners('reload-window');
     ipcMain.removeAllListeners('open-external');
+    ipcMain.removeAllListeners('set-proxy');
   };
   // * required to update preload.ts after modification
 };
 
 export const trayIpcListener = (origin: string, tray: Tray) => {
-  const listener = (_: Electron.IpcMainEvent, url: string, dataURL: string) => {
+  const setTrayIconListener = (
+    _: Electron.IpcMainEvent,
+    url: string,
+    dataURL: string,
+  ) => {
     if (origin !== url) return;
     const icon = nativeImage.createFromDataURL(dataURL);
     tray.setImage(icon);
   };
 
-  ipcMain.on('set-tray-icon', listener);
-  return () => ipcMain.removeListener('set-tray-icon', listener);
+  ipcMain.on('set-tray-icon', setTrayIconListener);
+  return () => {
+    ipcMain.removeListener('set-tray-icon', setTrayIconListener);
+  };
 };
 
 export default ipcListener;
