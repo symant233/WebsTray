@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { clsx } from 'clsx';
 import { WebviewTag } from 'electron';
 import {
   BackButton,
@@ -12,6 +13,9 @@ import useDataStore from '@client/hooks/useDataStore';
 import DevLabel from './common/DevLabel';
 import { convertImageToDataURL } from '@client/utils/imageConverter';
 import type { IData } from '@client/types';
+import { trayWindowBounds } from '@client/constant';
+
+const getResized = () => trayWindowBounds.width < window.innerWidth - 4;
 
 type Props = {
   url: string;
@@ -20,6 +24,7 @@ type Props = {
 export default function TrayContent({ url }: Props) {
   const webview = useRef<WebviewTag>(null);
   const [title, setTitle] = useState(url);
+  const [isResizedWidth, setIsResizedWidth] = useState(getResized());
 
   const current: IData = useDataStore((state) => state.getData(url));
   const updater = useDataStore((state) => state.updater);
@@ -53,6 +58,17 @@ export default function TrayContent({ url }: Props) {
   }
 
   useEffect(() => {
+    const listener = () => {
+      const value = getResized();
+      if (value !== isResizedWidth) setIsResizedWidth(value);
+    };
+    window.addEventListener('resize', listener);
+    return () => {
+      window.removeEventListener('resize', listener);
+    };
+  }, [isResizedWidth]);
+
+  useEffect(() => {
     webview.current.addEventListener('dom-ready', () => {
       webview.current.executeJavaScript(`
         const style = document.createElement('style');
@@ -83,7 +99,12 @@ export default function TrayContent({ url }: Props) {
 
   return (
     <div className="w-screen h-screen p-1 pb-3">
-      <div className="w-full h-full bg-gray-100 drop-shadow-md border border-solid p-2 pb-8 rounded-lg relative after:content-[''] after:absolute after:-bottom-[12px] after:left-1/2 after:-translate-x-1/2 after:border-x-[12px] after:border-transparent after:border-t-[12px] after:border-t-gray-100">
+      <div
+        className={clsx(
+          "w-full h-full bg-gray-100 drop-shadow-md border border-solid p-2 pb-8 rounded-lg relative after:content-[''] after:absolute after:-bottom-[12px] after:left-1/2 after:-translate-x-1/2 after:border-x-[12px] after:border-transparent after:border-t-[12px] after:border-t-gray-100",
+          isResizedWidth && 'after:invisible',
+        )}
+      >
         <webview
           // disablewebsecurity
           ref={webview}
@@ -92,9 +113,11 @@ export default function TrayContent({ url }: Props) {
         ></webview>
         <div className="select-none pt-1 text-sm text-gray-600 whitespace-nowrap w-full flex flex-row items-center">
           <BackButton onClick={() => webview.current.goBack()} />
-          <span className="overflow-hidden text-ellipsis pr-1">{title}</span>
+          <span className="overflow-hidden text-ellipsis pr-1 app-drag">
+            {title}
+          </span>
           <DevLabel />
-          <div className="flex-1 p-0.5"></div>
+          <div className="flex-1 p-0.5 min-h-5 app-drag"></div>
           <DevtoolButton onClick={() => webview.current.openDevTools()} />
           <HomeButton />
           <RefreshButton onClick={() => webview.current.reload()} />

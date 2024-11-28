@@ -5,10 +5,10 @@ export interface IElectronAPI {
   minimize: () => void;
   openWindow: (url: string) => Promise<[BrowserWindow, Tray]>;
   reload: () => void;
-  // tray ipc
-  setTrayIcon: (url: string, dataURL: string) => void;
   openExternal: (url: string) => void;
   setProxy: (proxy: stirng) => void;
+  // tray ipc
+  setTrayIcon: (url: string, dataURL: string) => void;
 }
 
 declare global {

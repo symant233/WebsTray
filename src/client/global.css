@@ -2,7 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
-#frame {
+#frame,
+.app-drag {
   -webkit-app-region: drag;
 }
 
