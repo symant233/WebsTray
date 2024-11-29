@@ -94,6 +94,7 @@ const createTrayWindow = async (
     if (trayWindow.isVisible()) {
       trayWindow.hide();
     } else {
+      trayMapper.forEach(([win]) => win.hide()); // hide all other tray windows
       setTrayWindowPosition(trayWindow, tray);
       trayWindow.show();
     }
