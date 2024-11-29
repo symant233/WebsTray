@@ -14,6 +14,7 @@ import DevLabel from './common/DevLabel';
 import { convertImageToDataURL } from '@client/utils/imageConverter';
 import type { IData } from '@client/types';
 import { trayWindowBounds } from '@client/constant';
+import useWebview from '../hooks/useWebview';
 
 const getResized = () => trayWindowBounds.width < window.innerWidth - 4;
 
@@ -58,9 +59,18 @@ export default function TrayContent({ url }: Props) {
   }
 
   useEffect(() => {
+    if (current.bounds) {
+      window.resizeTo(current.bounds.width, current.bounds.height);
+    }
+  }, []);
+
+  useEffect(() => {
     const listener = () => {
       const value = getResized();
       if (value !== isResizedWidth) setIsResizedWidth(value);
+      updater(url, {
+        bounds: { width: window.innerWidth, height: window.innerHeight },
+      });
     };
     window.addEventListener('resize', listener);
     return () => {
@@ -68,34 +78,7 @@ export default function TrayContent({ url }: Props) {
     };
   }, [isResizedWidth]);
 
-  useEffect(() => {
-    webview.current.addEventListener('dom-ready', () => {
-      webview.current.executeJavaScript(`
-        const style = document.createElement('style');
-        style.innerHTML = '::-webkit-scrollbar { display: none; }';
-        document.head.appendChild(style);
-        const base = document.createElement('base');
-        base.target = '_self';
-        document.head.appendChild(base);
-        window.orientation = 1;
-        document.addEventListener('mouseup', (e) => {
-          if (e.button === 3) window.history.back();
-        });
-      `);
-      webview.current.insertCSS(`
-        iframe {
-          border-radius: 16px;
-        }
-      `);
-      webview.current.addEventListener('will-navigate', (event) => {
-        event.preventDefault();
-        webview.current.loadURL(event.url);
-      });
-      webview.current.shadowRoot.querySelector('iframe').style.borderRadius =
-        '0.5rem';
-      handleManifest();
-    });
-  }, [webview]);
+  useWebview(webview, handleManifest);
 
   return (
     <div className="w-screen h-screen p-1 pb-3">
