@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from 'react';
-import { clsx } from 'clsx';
 import { WebviewTag } from 'electron';
 import {
   BackButton,
@@ -16,8 +15,6 @@ import type { IData } from '@client/types';
 import { trayWindowBounds } from '@client/constant';
 import useWebview from '../hooks/useWebview';
 
-const getResized = () => trayWindowBounds.width < window.innerWidth - 4;
-
 type Props = {
   url: string;
 };
@@ -25,7 +22,7 @@ type Props = {
 export default function TrayContent({ url }: Props) {
   const webview = useRef<WebviewTag>(null);
   const [title, setTitle] = useState(url);
-  const [isResizedWidth, setIsResizedWidth] = useState(getResized());
+  const containerRef = useRef<HTMLDivElement>(null);
 
   const current: IData = useDataStore((state) => state.getData(url));
   const updater = useDataStore((state) => state.updater);
@@ -58,6 +55,8 @@ export default function TrayContent({ url }: Props) {
     if (!current.icon) window.electron.reload();
   }
 
+  useWebview(webview, handleManifest);
+
   useEffect(() => {
     if (current.bounds) {
       window.resizeTo(current.bounds.width, current.bounds.height);
@@ -66,8 +65,12 @@ export default function TrayContent({ url }: Props) {
 
   useEffect(() => {
     const listener = () => {
-      const value = getResized();
-      if (value !== isResizedWidth) setIsResizedWidth(value);
+      const showTriangle = trayWindowBounds.width >= window.innerWidth - 10;
+      if (showTriangle) {
+        containerRef.current?.classList.remove('after:invisible');
+      } else {
+        containerRef.current?.classList.add('after:invisible');
+      }
       updater(url, {
         bounds: { width: window.innerWidth, height: window.innerHeight },
       });
@@ -76,17 +79,13 @@ export default function TrayContent({ url }: Props) {
     return () => {
       window.removeEventListener('resize', listener);
     };
-  }, [isResizedWidth]);
-
-  useWebview(webview, handleManifest);
+  }, []);
 
   return (
     <div className="w-screen h-screen p-1 pb-3">
       <div
-        className={clsx(
-          "w-full h-full bg-gray-100 drop-shadow-md border border-solid p-2 pb-8 rounded-lg relative after:content-[''] after:absolute after:-bottom-[12px] after:left-1/2 after:-translate-x-1/2 after:border-x-[12px] after:border-transparent after:border-t-[12px] after:border-t-gray-100",
-          isResizedWidth && 'after:invisible',
-        )}
+        className="w-full h-full bg-gray-100 drop-shadow-md border border-solid p-2 pb-8 rounded-lg relative after:content-[''] after:absolute after:-bottom-[12px] after:left-1/2 after:-translate-x-1/2 after:border-x-[12px] after:border-transparent after:border-t-[12px] after:border-t-gray-100"
+        ref={containerRef}
       >
         <webview
           // disablewebsecurity
