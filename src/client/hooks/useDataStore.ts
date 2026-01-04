@@ -6,10 +6,15 @@ export type IConfig = {
   proxy: '' | 'system' | string;
 };
 
+const initialConfig: IConfig = {
+  proxy: '',
+};
+
 interface State {
   recent: IData[];
   favorite: IData[];
   getData: (url: string) => IData;
+  getAllData: () => IData[];
   addRecent: (value: IData) => void;
   addFavorite: (value: IData) => void;
   updater: (url: string, obj: Partial<IData>) => void;
@@ -22,13 +27,16 @@ interface State {
 const useDataStore = create<State>()(
   persist(
     (set, get) => ({
-      recent: [],
-      favorite: [],
+      recent: [] as IData[],
+      favorite: [] as IData[],
       getData: (url: string) => {
         return (
           get().favorite.find((data) => data.url === url) ||
           get().recent.find((data) => data.url === url)
         );
+      },
+      getAllData: () => {
+        return [...get().favorite, ...get().recent];
       },
       addRecent: (value: IData) =>
         set((state) => ({ recent: [...state.recent, value] })),
@@ -64,7 +72,7 @@ const useDataStore = create<State>()(
           }),
         }));
       },
-      config: { proxy: '' },
+      config: initialConfig,
       setConfig: (value: IConfig) => {
         set((_) => ({ config: value }));
       },

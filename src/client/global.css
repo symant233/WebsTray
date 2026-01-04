@@ -10,3 +10,28 @@
 .no-drag {
   -webkit-app-region: no-drag;
 }
+
+@layer utilities {
+  .scrollbar::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  .scrollbar::-webkit-scrollbar-track {
+    border-radius: 100vh;
+    background: transparent;
+  }
+
+  .scrollbar::-webkit-scrollbar-thumb {
+    background: #dadada;
+    border-radius: 100vh;
+    border: 2px solid transparent;
+    background-clip: content-box;
+  }
+
+  .scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #aeaeae;
+    border: 2px solid transparent;
+    background-clip: content-box;
+  }
+}
