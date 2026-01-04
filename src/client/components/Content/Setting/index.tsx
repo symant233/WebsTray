@@ -39,7 +39,7 @@ export default function Setting(): React.ReactNode {
       />
     );
   return (
-    <div className="absolute inset-0 w-full h-full flex bg-white z-30">
+    <div className="inset-0 w-full h-full flex bg-white z-30 fixed pt-14">
       <Tabs options={options}></Tabs>
       <div className="flex justify-end absolute bottom-0 w-full gap-2 p-4 bg-white border-t shadow-md">
         <Button cb={handleAccept} label="Accept" type="primary" />
