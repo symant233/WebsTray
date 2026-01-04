@@ -34,7 +34,7 @@ Download latest production installer: [releases](https://github.com/symant233/We
 npm run dev # start dev application
 
 npm run package # package into a platform-specific executable bundle
-npm make # make distributables (installer)
+npm run make # make distributables (installer)
 ```
 
 - https://www.electronforge.io/
