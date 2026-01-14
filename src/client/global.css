@@ -44,14 +44,14 @@
 
   /* Dark mode scrollbar */
   .dark .scrollbar::-webkit-scrollbar-thumb {
-    background: #4b5563;
+    background: #525252;
     border-radius: 100vh;
     border: 2px solid transparent;
     background-clip: content-box;
   }
 
   .dark .scrollbar::-webkit-scrollbar-thumb:hover {
-    background: #6b7280;
+    background: #737373;
     border: 2px solid transparent;
     background-clip: content-box;
   }

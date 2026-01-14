@@ -8,7 +8,7 @@ export default function Content() {
   const favorite = useDataStore((state) => state.favorite);
 
   return (
-    <div className="w-full h-full p-6 select-none gap-2 relative overflow-y-auto scrollbar">
+    <div className="w-full h-full p-6 select-none gap-2 relative overflow-y-auto scrollbar dark:bg-neutral-900">
       <div className="font-bold text-lg my-2 dark:text-white">Favorite</div>
       <div className="flex flex-row flex-wrap gap-1">
         {favorite.length ? (

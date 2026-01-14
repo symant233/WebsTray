@@ -13,7 +13,7 @@ const GeneralSetting: React.FC<Props> = ({ config, setConfig }) => {
       <div className="px-4 flex flex-col *:p-2">
         <div className="font-bold before:content-['#'] before:pr-2 dark:text-white">
           Proxy Setting&nbsp;
-          <span className="text-gray-500 dark:text-gray-400 text-sm">(restart to apply)</span>
+          <span className="text-gray-500 dark:text-neutral-400 text-sm">(restart to apply)</span>
         </div>
         <div>
           <input
@@ -25,7 +25,7 @@ const GeneralSetting: React.FC<Props> = ({ config, setConfig }) => {
             onClick={() => setConfig({ ...config, proxy: '' })}
             readOnly
           />
-          <label htmlFor="proxy-direct" className="dark:text-gray-200">Direct</label>
+          <label htmlFor="proxy-direct" className="dark:text-neutral-200">Direct</label>
         </div>
 
         <div>
@@ -38,7 +38,7 @@ const GeneralSetting: React.FC<Props> = ({ config, setConfig }) => {
             onClick={() => setConfig({ ...config, proxy: 'system' })}
             readOnly
           />
-          <label htmlFor="proxy-system" className="dark:text-gray-200">System proxy</label>
+          <label htmlFor="proxy-system" className="dark:text-neutral-200">System proxy</label>
         </div>
 
         <div className="py-1">
@@ -53,9 +53,9 @@ const GeneralSetting: React.FC<Props> = ({ config, setConfig }) => {
             }
             readOnly
           />
-          <label htmlFor="proxy-custom" className="dark:text-gray-200">Custom</label>
+          <label htmlFor="proxy-custom" className="dark:text-neutral-200">Custom</label>
           <input
-            className="border border-solid dark:border-gray-600 ml-2 shadow-sm rounded w-64 focus-within:outline-blue-300 dark:focus-within:outline-blue-500 px-2 py-1 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 transition-colors"
+            className="border border-solid dark:border-neutral-600 ml-2 shadow-sm rounded w-64 focus-within:outline-blue-300 dark:focus-within:outline-blue-500 px-2 py-1 bg-white dark:bg-neutral-700 text-gray-900 dark:text-neutral-100 transition-colors"
             value={config.proxy === 'system' ? '' : config.proxy}
             onChange={(e) => setConfig({ ...config, proxy: e.target.value })}
             spellCheck={false}
