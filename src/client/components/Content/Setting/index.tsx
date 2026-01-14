@@ -39,9 +39,9 @@ export default function Setting(): React.ReactNode {
       />
     );
   return (
-    <div className="inset-0 w-full h-full flex bg-white z-30 fixed pt-14">
+    <div className="inset-0 w-full h-full flex bg-white dark:bg-gray-900 z-30 fixed pt-14 transition-colors">
       <Tabs options={options}></Tabs>
-      <div className="flex justify-end absolute bottom-0 w-full gap-2 p-4 bg-white border-t shadow-md">
+      <div className="flex justify-end absolute bottom-0 w-full gap-2 p-4 bg-white dark:bg-gray-800 border-t dark:border-gray-700 shadow-md transition-colors">
         <Button cb={handleAccept} label="Accept" type="primary" />
         <Button cb={() => setOpen(false)} label="Cancel" type="secondary" />
       </div>

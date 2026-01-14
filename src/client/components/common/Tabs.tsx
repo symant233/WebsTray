@@ -17,7 +17,7 @@ export default function Tabs({ options, onChange }: Props) {
 
   return (
     <>
-      <div className="text-base p-3 h-full min-h-10 flex flex-col gap-2 border-r select-none pt-5 shadow-sm">
+      <div className="text-base p-3 h-full min-h-10 flex flex-col gap-2 border-r dark:border-gray-700 select-none pt-5 shadow-sm bg-white dark:bg-gray-800 transition-colors">
         {options &&
           options.map((i) => {
             return (
@@ -28,7 +28,7 @@ export default function Tabs({ options, onChange }: Props) {
                   'px-2.5 py-1.5 rounded-sm transition-colors',
                   {
                     'bg-blue-500 text-white': checked === i.label,
-                    'hover:bg-gray-100 active:bg-gray-200': checked !== i.label,
+                    'hover:bg-gray-100 dark:hover:bg-gray-700 active:bg-gray-200 dark:active:bg-gray-600 dark:text-gray-200': checked !== i.label,
                     '!cursor-not-allowed': i.disabled,
                   },
                 )}

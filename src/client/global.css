@@ -11,6 +11,13 @@
   -webkit-app-region: no-drag;
 }
 
+/* Smooth theme transitions */
+* {
+  transition-property: background-color, border-color, color;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+
 @layer utilities {
   .scrollbar::-webkit-scrollbar {
     width: 10px;
@@ -31,6 +38,20 @@
 
   .scrollbar::-webkit-scrollbar-thumb:hover {
     background: #aeaeae;
+    border: 2px solid transparent;
+    background-clip: content-box;
+  }
+
+  /* Dark mode scrollbar */
+  .dark .scrollbar::-webkit-scrollbar-thumb {
+    background: #4b5563;
+    border-radius: 100vh;
+    border: 2px solid transparent;
+    background-clip: content-box;
+  }
+
+  .dark .scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #6b7280;
     border: 2px solid transparent;
     background-clip: content-box;
   }

@@ -1,13 +1,15 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import type { IData } from '@client/types';
+import type { IData, ThemeMode } from '@client/types';
 
 export type IConfig = {
   proxy: '' | 'system' | string;
+  theme: ThemeMode;
 };
 
 const initialConfig: IConfig = {
   proxy: '',
+  theme: 'system',
 };
 
 interface State {
