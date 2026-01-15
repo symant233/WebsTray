@@ -16,7 +16,7 @@ const THEME_CONFIG: Record<ThemeMode, { icon: string; title: string }> = {
 };
 
 const ThemeToggle = ({ theme, onToggle, className = '' }: Props) => {
-  const { icon, title } = THEME_CONFIG[theme];
+  const { icon, title } = THEME_CONFIG[theme] || THEME_CONFIG.system;
 
   return (
     <div
