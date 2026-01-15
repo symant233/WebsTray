@@ -9,36 +9,22 @@ type Props = {
   className?: string;
 };
 
-const ThemeToggle = ({ theme, onToggle, className = '' }: Props) => {
-  const getIcon = () => {
-    switch (theme) {
-      case 'light':
-        return mdiWeatherSunny;
-      case 'dark':
-        return mdiWeatherNight;
-      case 'system':
-        return mdiThemeLightDark;
-    }
-  };
+const THEME_CONFIG: Record<ThemeMode, { icon: string; title: string }> = {
+  light: { icon: mdiWeatherSunny, title: 'Light Theme' },
+  dark: { icon: mdiWeatherNight, title: 'Dark Theme' },
+  system: { icon: mdiThemeLightDark, title: 'Follow System' },
+};
 
-  const getTitle = () => {
-    switch (theme) {
-      case 'light':
-        return '亮色主题';
-      case 'dark':
-        return '暗色主题';
-      case 'system':
-        return '跟随系统';
-    }
-  };
+const ThemeToggle = ({ theme, onToggle, className = '' }: Props) => {
+  const { icon, title } = THEME_CONFIG[theme];
 
   return (
     <div
       className={`hover:bg-gray-200 dark:hover:bg-gray-700 p-1 rounded active:bg-gray-300 dark:active:bg-gray-600 transition-colors cursor-pointer ${className}`}
       onClick={onToggle}
-      title={getTitle()}
+      title={title}
     >
-      <Icon path={getIcon()} size={'1rem'} />
+      <Icon path={icon} size={'1rem'} />
     </div>
   );
 };
