@@ -15,7 +15,7 @@ type IconButtonProps = {
 const IconButton = ({ onClick, icon }: IconButtonProps) => {
   return (
     <div
-      className="hover:bg-gray-200 p-1 rounded active:bg-gray-300 transition-colors cursor-pointer"
+      className="hover:bg-gray-200 dark:hover:bg-gray-700 p-1 rounded active:bg-gray-300 dark:active:bg-gray-600 transition-colors cursor-pointer"
       onClick={onClick}
     >
       <Icon path={icon} size={'1rem'} />

@@ -8,8 +8,8 @@ export default function Content() {
   const favorite = useDataStore((state) => state.favorite);
 
   return (
-    <div className="w-full h-full p-6 select-none gap-2 relative overflow-y-auto scrollbar">
-      <div className="font-bold text-lg my-2">Favorite</div>
+    <div className="w-full h-full p-6 select-none gap-2 relative overflow-y-auto scrollbar dark:bg-neutral-900">
+      <div className="font-bold text-lg my-2 dark:text-white">Favorite</div>
       <div className="flex flex-row flex-wrap gap-1">
         {favorite.length ? (
           favorite.map((i) => {
@@ -20,13 +20,13 @@ export default function Content() {
             );
           })
         ) : (
-          <p className="font-bold text-gray-500 pb-4 block">
+          <p className="font-bold text-gray-500 dark:text-gray-400 pb-4 block">
             No favorited web apps found.
           </p>
         )}
       </div>
 
-      <div className="font-bold text-lg my-2">Recent</div>
+      <div className="font-bold text-lg my-2 dark:text-white">Recent</div>
       <div className="flex flex-row flex-wrap gap-1">
         {recent.length ? (
           recent.map((i) => {
@@ -37,7 +37,7 @@ export default function Content() {
             );
           })
         ) : (
-          <p className="font-bold text-gray-500 pb-4 block">
+          <p className="font-bold text-gray-500 dark:text-gray-400 pb-4 block">
             No recently accessed web apps.
           </p>
         )}

@@ -1,3 +1,5 @@
+export type ThemeMode = 'light' | 'dark' | 'system';
+
 export type IData = {
   /** webview url */
   url: string;
@@ -18,4 +20,6 @@ export type IData = {
     width: number;
     height: number;
   };
+  /** per-page theme override */
+  theme?: ThemeMode;
 };

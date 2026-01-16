@@ -16,11 +16,11 @@ export default function ContentItem({ item }: IContentItemProps) {
 
   return (
     <div
-      className="hover:bg-gray-100 rounded-lg flex flex-col items-center justify-center p-4 gap-2 cursor-pointer active:bg-gray-200 transition-colors"
+      className="hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg flex flex-col items-center justify-center p-4 gap-2 cursor-pointer active:bg-gray-200 dark:active:bg-gray-600 transition-colors"
       onClick={() => window.electron.openWindow(item.url)}
     >
       <LazyImage src={iconURL} width={64} height={64} className="rounded-lg" />
-      <span className="w-20 overflow-hidden overflow-ellipsis text-nowrap whitespace-nowrap text-center">
+      <span className="w-20 overflow-hidden overflow-ellipsis text-nowrap whitespace-nowrap text-center dark:text-gray-200">
         {item?.title || hostname}
       </span>
     </div>
