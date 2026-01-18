@@ -6,7 +6,7 @@ export interface IElectronAPI {
   openWindow: (url: string) => Promise<[BrowserWindow, Tray]>;
   reload: () => void;
   openExternal: (url: string) => void;
-  setProxy: (proxy: stirng) => void;
+  setProxy: (proxy: string) => void;
   // tray ipc
   setTrayIcon: (url: string, dataURL: string) => void;
 }

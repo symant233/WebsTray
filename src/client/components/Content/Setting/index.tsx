@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, type ReactNode } from 'react';
 import Button from '@client/components/common/Button';
 import Tabs, { ITabOption } from '@client/components/common/Tabs';
 import SettingButton from './SettingButton';
@@ -6,7 +6,7 @@ import GeneralSetting from './GeneralSetting';
 import About from './About';
 import useDataStore from '@client/hooks/useDataStore';
 
-export default function Setting(): React.ReactNode {
+export default function Setting(): ReactNode {
   const [open, setOpen] = useState(false);
 
   const config = useDataStore((state) => state.config);
