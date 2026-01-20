@@ -1,3 +1,4 @@
+import type Electron from 'electron';
 import { app, BrowserWindow, Tray, screen } from 'electron';
 import path from 'path';
 

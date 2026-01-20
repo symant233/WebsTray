@@ -5,7 +5,13 @@ import pkg from './package.json';
 
 export const builtins = ['electron', ...builtinModules.map((m) => [m, `node:${m}`]).flat()];
 
-export const external = [...builtins, ...Object.keys('dependencies' in pkg ? (pkg.dependencies as Record<string, unknown>) : {})];
+export const external = [
+  ...builtins,
+  ...Object.keys('dependencies' in pkg ? (pkg.dependencies as Record<string, unknown>) : {}).filter(
+    // electron-squirrel-startup 需要被打包进去，不能作为外部依赖
+    (dep) => dep !== 'electron-squirrel-startup'
+  )
+];
 
 export function getBuildConfig(env: ConfigEnv<'build'>): UserConfig {
   const { root, mode, command } = env;

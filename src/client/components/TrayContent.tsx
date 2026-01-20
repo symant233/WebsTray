@@ -40,7 +40,8 @@ export default function TrayContent({ url }: Props) {
   };
 
   async function handleManifest() {
-    const webTitle = webview.current?.getTitle();
+    if (!webview.current) return;
+    const webTitle = webview.current.getTitle();
     setTitle(webTitle);
     // * start of manifest handler
     const manifest = await webview.current.executeJavaScript(

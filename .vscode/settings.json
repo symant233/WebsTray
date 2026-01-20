@@ -5,5 +5,7 @@
   "files.associations": {
     "*.css": "tailwindcss"
   },
-  "editor.wordWrap": "on"
+  "editor.wordWrap": "on",
+  "javascript.validate.enable": false,
+  "typescript.validate.enable": false,
 }

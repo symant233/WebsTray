@@ -1,11 +1,12 @@
 import type { IConfig } from '@/client/hooks/useDataStore';
+import type { Dispatch, SetStateAction, FC } from 'react';
 
 type Props = {
   config: IConfig;
-  setConfig: React.Dispatch<React.SetStateAction<IConfig>>;
+  setConfig: Dispatch<SetStateAction<IConfig>>;
 };
 
-const GeneralSetting: React.FC<Props> = ({ config, setConfig }) => {
+const GeneralSetting: FC<Props> = ({ config, setConfig }) => {
   return (
     <div className="w-full mt-2">
       <div className="p-4 text-lg font-bold dark:text-white">General Settings</div>

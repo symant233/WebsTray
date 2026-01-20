@@ -1,9 +1,9 @@
 import { clsx } from 'clsx';
-import { useState } from 'react';
+import { useState, type ReactNode } from 'react';
 
 export type ITabOption = {
   label: string;
-  render?: React.ReactNode;
+  render?: ReactNode;
   disabled?: boolean;
 };
 

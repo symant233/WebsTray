@@ -1,4 +1,5 @@
-import { useEffect } from 'react';
+import type Electron from 'electron';
+import { useEffect, type RefObject } from 'react';
 
 /**
  * Execute JavaScript code and apply CSS style in the webview. Run callback function after execution.
@@ -7,14 +8,22 @@ import { useEffect } from 'react';
  * @returns {void}
  */
 export default function useWebview(
-  webview: React.MutableRefObject<Electron.WebviewTag>,
+  webview: RefObject<Electron.WebviewTag>,
   callback: () => void,
 ): void {
   useEffect(() => {
-    webview.current.addEventListener('dom-ready', () => {
-      webview.current.executeJavaScript(`
+    const element = webview.current;
+    if (!element) return;
+
+    const handleWillNavigate = (event: Electron.Event & { url: string }) => {
+      event.preventDefault();
+      element.loadURL(event.url);
+    };
+
+    const handleDomReady = () => {
+      element.executeJavaScript(`
         const style = document.createElement('style');
-        style.innerHTML = '::-webkit-scrollbar { display: none; }';
+        //style.innerHTML = '::-webkit-scrollbar { display: none; }';
         document.head.appendChild(style);
         const base = document.createElement('base');
         base.target = '_self';
@@ -24,18 +33,23 @@ export default function useWebview(
           if (e.button === 3) window.history.back();
         });
       `);
-      webview.current.insertCSS(`
+      element.insertCSS(`
         iframe {
           border-radius: 16px;
         }
       `);
-      webview.current.addEventListener('will-navigate', (event) => {
-        event.preventDefault();
-        webview.current.loadURL(event.url);
-      });
-      webview.current.shadowRoot.querySelector('iframe').style.borderRadius =
-        '0.5rem';
+      const iframe = element.shadowRoot?.querySelector('iframe');
+      if (iframe instanceof HTMLIFrameElement) {
+        iframe.style.borderRadius = '0.5rem';
+      }
       callback();
-    });
-  }, [webview]);
+    };
+
+    element.addEventListener('dom-ready', handleDomReady);
+    element.addEventListener('will-navigate', handleWillNavigate);
+    return () => {
+      element.removeEventListener('dom-ready', handleDomReady);
+      element.removeEventListener('will-navigate', handleWillNavigate);
+    };
+  }, [webview, callback]);
 }

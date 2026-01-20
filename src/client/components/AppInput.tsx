@@ -1,6 +1,6 @@
 import { Icon } from '@mdi/react';
 import { mdiLink } from '@mdi/js';
-import { useRef } from 'react';
+import { useRef, type KeyboardEvent } from 'react';
 import urlValidator from '@client/utils/urlValidator';
 import getHostname from '@client/utils/getHostname';
 import useDataStore from '@client/hooks/useDataStore';
@@ -9,7 +9,7 @@ export default function AppInput() {
   const inputRef = useRef<HTMLInputElement>(null);
   const addRecent = useDataStore((state) => state.addRecent);
 
-  const handleEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleEnter = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       const href = urlValidator(inputRef.current?.value);
       if (href) {

@@ -1,3 +1,4 @@
+import type Electron from 'electron';
 import {
   BrowserWindow,
   ipcMain,
