@@ -9,6 +9,10 @@ export default function sessionHandler() {
 
   session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
     const headers = details.responseHeaders;
+    if (!headers) {
+      callback({});
+      return;
+    }
 
     if (
       !headers['Access-Control-Allow-Credentials'] &&

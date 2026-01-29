@@ -1,6 +1,11 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+
+/* Enable dark mode with class strategy */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Source paths for content detection */
+@source "../../index.html";
+@source "../**/*.{js,ts,jsx,tsx}";
 
 #frame,
 .app-drag {
@@ -18,39 +23,39 @@
   transition-duration: 150ms;
 }
 
-@layer utilities {
-  .scrollbar::-webkit-scrollbar {
+@utility scrollbar {
+  &::-webkit-scrollbar {
     width: 10px;
     height: 10px;
   }
 
-  .scrollbar::-webkit-scrollbar-track {
+  &::-webkit-scrollbar-track {
     border-radius: 100vh;
     background: transparent;
   }
 
-  .scrollbar::-webkit-scrollbar-thumb {
+  &::-webkit-scrollbar-thumb {
     background: #dadada;
     border-radius: 100vh;
     border: 2px solid transparent;
     background-clip: content-box;
   }
 
-  .scrollbar::-webkit-scrollbar-thumb:hover {
+  &::-webkit-scrollbar-thumb:hover {
     background: #aeaeae;
     border: 2px solid transparent;
     background-clip: content-box;
   }
 
   /* Dark mode scrollbar */
-  .dark .scrollbar::-webkit-scrollbar-thumb {
+  :where(.dark, .dark *) &::-webkit-scrollbar-thumb {
     background: #525252;
     border-radius: 100vh;
     border: 2px solid transparent;
     background-clip: content-box;
   }
 
-  .dark .scrollbar::-webkit-scrollbar-thumb:hover {
+  :where(.dark, .dark *) &::-webkit-scrollbar-thumb:hover {
     background: #737373;
     border: 2px solid transparent;
     background-clip: content-box;

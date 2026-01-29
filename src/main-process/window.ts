@@ -1,3 +1,4 @@
+import type Electron from 'electron';
 import { BrowserWindow, Menu, nativeImage, screen, Tray } from 'electron';
 import path from 'path';
 import {

@@ -1,9 +1,9 @@
-import { useEffect } from 'react';
+import { useEffect, type DependencyList } from 'react';
 
 export default function useHotKey(
   key: string,
   cb: () => void,
-  deps: React.DependencyList = [],
+  deps: DependencyList = [],
 ) {
   useEffect(() => {
     if (!key || !cb) return;
@@ -20,7 +20,7 @@ export function useHotKeyContainer(
   key: string,
   container: HTMLElement | null,
   cb: () => void,
-  deps: React.DependencyList = [],
+  deps: DependencyList = [],
 ) {
   useEffect(() => {
     if (!key || !container || !cb) return;

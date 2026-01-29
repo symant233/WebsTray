@@ -1,14 +1,15 @@
 import type { IData } from '@client/types';
 import MenuContext from '@client/components/common/MenuContext';
 import useDataStore from '@client/hooks/useDataStore';
+import type { FC, ReactNode } from 'react';
 
 type Props = {
   item: IData;
   recent?: boolean;
-  children: React.ReactNode;
+  children: ReactNode;
 };
 
-const MenuContextItem: React.FC<Props> = ({
+const MenuContextItem: FC<Props> = ({
   item,
   children,
   recent = true,

@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import { memo, type ReactNode } from 'react';
 import { Icon } from '@mdi/react';
 import { mdiMinus } from '@mdi/js';
 import { CloseButton } from './common/IconButtons';
@@ -8,7 +8,7 @@ import useDataStore from '@client/hooks/useDataStore';
 import { getNextThemeMode } from '@client/hooks/useTheme';
 
 type Props = {
-  children: React.ReactNode;
+  children: ReactNode;
 };
 
 const Frame = ({ children }: Props) => {

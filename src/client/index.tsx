@@ -40,6 +40,6 @@ const App = () => {
   );
 };
 
-const root = createRoot(document.querySelector('#app'));
+const root = createRoot(document.querySelector('#app')!);
 
 root.render(<App />);
