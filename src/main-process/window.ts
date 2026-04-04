@@ -76,13 +76,16 @@ const createTrayWindow = async (
   const trayWindow = new BrowserWindow({
     ...trayWindowBounds,
     transparent: true,
+    resizable: true,
     hiddenInMissionControl: true,
     skipTaskbar: true,
+    hasShadow: false,
+    thickFrame: false,
     ...options,
   });
-  setTrayWindowPosition(trayWindow, tray);
 
   await _loadApp(trayWindow, url);
+  setTrayWindowPosition(trayWindow, tray);
   const remover = trayIpcListener(url, tray);
   trayWindow.once('closed', () => {
     remover();
