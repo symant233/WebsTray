@@ -76,6 +76,7 @@ const createTrayWindow = async (
   const trayWindow = new BrowserWindow({
     ...trayWindowBounds,
     transparent: true,
+    resizable: true,
     hiddenInMissionControl: true,
     skipTaskbar: true,
     ...options,

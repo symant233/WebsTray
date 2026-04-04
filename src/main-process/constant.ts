@@ -7,5 +7,7 @@ export const mainWindowBounds = {
 
 export const trayWindowBounds = {
   width: 430,
-  height: 780,
+  height: 860,
+  minWidth: 430,
+  minHeight: 780,
 };
