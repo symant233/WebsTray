@@ -1,6 +1,9 @@
 import { BrowserWindow, Tray } from 'electron';
 
 export interface IElectronAPI {
+  // platform info
+  platform: typeof process.platform;
+  isMac: boolean;
   // mainWindow ipc
   minimize: () => void;
   openWindow: (url: string) => Promise<[BrowserWindow, Tray]>;

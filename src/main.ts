@@ -1,23 +1,28 @@
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow, nativeImage } from 'electron';
 import { createWindow } from './main-process/window';
 import session from './main-process/session';
-import squirrelStartup from 'electron-squirrel-startup';
+import { getPublicAsset } from './main-process/helper';
 
-// Handle creating/removing shortcuts on Windows when installing/uninstalling.
-if (squirrelStartup) {
-  app.quit();
+if (process.platform === 'win32') {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const squirrelStartup = require('electron-squirrel-startup');
+  if (squirrelStartup) {
+    app.quit();
+  }
+  app.commandLine.appendSwitch('wm-window-animations-disabled');
 }
 
 if (!app.requestSingleInstanceLock()) {
-  app.quit(); // quit duplicated main process
+  app.quit();
 }
 
-app.commandLine.appendSwitch('wm-window-animations-disabled'); // stop flicker
-
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-// Some APIs can only be used after this event occurs.
 app.whenReady().then(async () => {
+  if (process.platform === 'darwin' && app.dock) {
+    const dockIcon = nativeImage.createFromPath(getPublicAsset('WebsTray-dock.png'));
+    if (!dockIcon.isEmpty()) {
+      app.dock.setIcon(dockIcon);
+    }
+  }
   createWindow();
   session();
 });
