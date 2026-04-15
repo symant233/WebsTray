@@ -2,14 +2,18 @@ import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import type { IData, ThemeMode } from '@client/types';
 
+export type UserAgentType = 'electron' | 'pc' | 'android' | 'ios';
+
 export type IConfig = {
   proxy: '' | 'system' | string;
   theme: ThemeMode;
+  userAgent: UserAgentType;
 };
 
 const initialConfig: IConfig = {
   proxy: '',
   theme: 'system',
+  userAgent: 'electron',
 };
 
 interface State {

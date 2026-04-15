@@ -7,6 +7,7 @@ export interface IElectronAPI {
   reload: () => void;
   openExternal: (url: string) => void;
   setProxy: (proxy: string) => void;
+  setUserAgent: (userAgentType: string) => void;
   // tray ipc
   setTrayIcon: (url: string, dataURL: string) => void;
 }

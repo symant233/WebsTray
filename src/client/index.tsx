@@ -11,11 +11,18 @@ import useHotKey from './hooks/useHotkey';
 import { useTheme } from './hooks/useTheme';
 
 const App = () => {
-  const { proxy, theme: globalTheme } = useDataStore((state) => state.config);
+  const {
+    proxy,
+    theme: globalTheme,
+    userAgent,
+  } = useDataStore((state) => state.config);
 
   useEffect(() => {
     if (proxy) {
       window.electron.setProxy(proxy);
+    }
+    if (userAgent) {
+      window.electron.setUserAgent(userAgent);
     }
   }, []);
 
