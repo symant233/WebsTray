@@ -120,7 +120,7 @@ export default function TrayContent({ url }: Props) {
   return (
     <div className={`w-screen h-screen p-1 ${isMac ? 'pt-3' : 'pb-3'} bg-transparent`}>
       <div
-        className={`w-full h-full bg-gray-100 dark:bg-neutral-900 drop-shadow-md border border-solid border-gray-200 dark:border-neutral-700 p-2 ${isMac ? '' : 'pb-8'} rounded-lg relative ${isMac ? triangleMac : triangleWin} transition-colors flex flex-col`}
+        className={`w-full h-full bg-gray-100 dark:bg-neutral-900 drop-shadow-md border border-solid border-gray-200 dark:border-neutral-700 p-2 rounded-lg relative ${isMac ? triangleMac : triangleWin} transition-colors flex flex-col`}
         ref={containerRef}
       >
         {isMac && controlBar}
