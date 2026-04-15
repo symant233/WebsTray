@@ -4,6 +4,7 @@ import path from 'path';
 import {
   getPublicAsset,
   isCursorInside,
+  isMac,
   setTrayWindowPosition,
 } from './helper';
 import ipcListener, { trayIpcListener } from './ipcListener';
@@ -12,7 +13,9 @@ import { mainWindowBounds, trayWindowBounds } from './constant';
 let mainWindowInstance: BrowserWindow | null;
 const trayMapper = new Map<string, [BrowserWindow, Tray]>();
 
-const icon = nativeImage.createFromPath(getPublicAsset('WebsTray.png'));
+const appIcon = nativeImage.createFromPath(getPublicAsset('WebsTray.png'));
+// macOS menu bar icons should be ~18px to match system icon sizes
+const trayIcon = isMac ? appIcon.resize({ width: 18, height: 18 }) : appIcon;
 
 // load the index.html of the app.
 const _loadApp = async (window: BrowserWindow, url = '') => {
@@ -34,11 +37,12 @@ const options: Electron.BrowserWindowConstructorOptions = {
     webviewTag: true,
     nodeIntegration: true,
   },
-  icon,
+  icon: appIcon,
   autoHideMenuBar: true,
   frame: false,
   maximizable: false,
   fullscreenable: false,
+  ...(isMac && { titleBarStyle: 'hiddenInset' as const, trafficLightPosition: { x: 12, y: 22 } }),
 };
 
 const createWindow = async (): Promise<BrowserWindow> => {
@@ -72,7 +76,7 @@ const createTrayWindow = async (
     return mapper;
   }
 
-  const tray = new Tray(icon);
+  const tray = new Tray(trayIcon);
   const trayWindow = new BrowserWindow({
     ...trayWindowBounds,
     transparent: true,
@@ -80,8 +84,9 @@ const createTrayWindow = async (
     hiddenInMissionControl: true,
     skipTaskbar: true,
     hasShadow: false,
-    thickFrame: false,
+    ...(!isMac && { thickFrame: false }), // thickFrame is Windows-only
     ...options,
+    ...(isMac && { titleBarStyle: 'default' as const, frame: false }), // override hiddenInset for tray popups
   });
 
   await _loadApp(trayWindow, url);
@@ -91,24 +96,6 @@ const createTrayWindow = async (
     remover();
     tray.destroy();
     trayMapper.delete(url);
-  });
-
-  // visibility part
-  tray.on('click', () => {
-    if (trayWindow.isVisible()) {
-      trayWindow.hide();
-    } else {
-      trayMapper.forEach(([win]) => win.hide()); // hide all other tray windows
-      setTrayWindowPosition(trayWindow, tray);
-      trayWindow.show();
-    }
-  });
-  trayWindow.on('blur', () => {
-    if (
-      !trayWindow.isAlwaysOnTop() &&
-      !isCursorInside(screen.getCursorScreenPoint(), tray.getBounds())
-    )
-      trayWindow.hide();
   });
 
   const contextMenu = Menu.buildFromTemplate([
@@ -136,7 +123,7 @@ const createTrayWindow = async (
     {
       label: 'Always On Top',
       type: 'checkbox',
-      checked: false,
+      checked: isMac,
       click: (e: Electron.MenuItem) => {
         trayWindow.setAlwaysOnTop(e.checked);
         if (e.checked) {
@@ -152,7 +139,43 @@ const createTrayWindow = async (
       click: () => trayWindow.close(),
     },
   ]);
-  tray.setContextMenu(contextMenu);
+
+  if (isMac) {
+    trayWindow.setAlwaysOnTop(true);
+  }
+
+  // macOS: click toggles window, option+click or right-click shows context menu
+  // Windows: click toggles window, right-click shows context menu (via setContextMenu)
+  tray.on('click', (event) => {
+    if (isMac && event.altKey) {
+      tray.popUpContextMenu(contextMenu);
+      return;
+    }
+    if (trayWindow.isVisible()) {
+      trayWindow.hide();
+    } else {
+      trayMapper.forEach(([win]) => win.hide());
+      setTrayWindowPosition(trayWindow, tray);
+      trayWindow.show();
+    }
+  });
+
+  if (isMac) {
+    tray.on('right-click', () => {
+      tray.popUpContextMenu(contextMenu);
+    });
+  } else {
+    tray.setContextMenu(contextMenu);
+  }
+
+  trayWindow.on('blur', () => {
+    if (
+      !trayWindow.isAlwaysOnTop() &&
+      !isCursorInside(screen.getCursorScreenPoint(), tray.getBounds())
+    )
+      trayWindow.hide();
+  });
+
   tray.setToolTip('WebsTray App');
 
   trayMapper.set(url, [trayWindow, tray]);

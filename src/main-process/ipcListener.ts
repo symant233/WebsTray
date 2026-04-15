@@ -8,6 +8,7 @@ import {
   session,
 } from 'electron';
 import { createTrayWindow } from './window';
+import { isMac } from './helper';
 
 const ipcListener = (window: BrowserWindow): (() => void) => {
   ipcMain.on('minimize-window', () => {
@@ -54,7 +55,10 @@ export const trayIpcListener = (origin: string, tray: Tray) => {
     dataURL: string,
   ) => {
     if (origin !== url) return;
-    const icon = nativeImage.createFromDataURL(dataURL);
+    let icon = nativeImage.createFromDataURL(dataURL);
+    if (isMac) {
+      icon = icon.resize({ width: 18, height: 18 });
+    }
     tray.setImage(icon);
   };
 

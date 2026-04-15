@@ -3,6 +3,9 @@
 import { contextBridge, ipcRenderer } from 'electron';
 
 contextBridge.exposeInMainWorld('electron', {
+  // platform info
+  platform: process.platform,
+  isMac: process.platform === 'darwin',
   // mainWindow ipc
   minimize: () => ipcRenderer.send('minimize-window'),
   openWindow: (url: string) => ipcRenderer.send('open-window', url),

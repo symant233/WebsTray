@@ -30,8 +30,10 @@ const App = () => {
     window.location?.reload();
   });
 
+  const isMac = window.electron.isMac;
+
   return (
-    <div className="h-screen w-screen bg-white dark:bg-gray-900 flex flex-col border border-solid border-black dark:border-gray-700 transition-colors">
+    <div className={`h-screen w-screen bg-white dark:bg-gray-900 flex flex-col transition-colors ${isMac ? '' : 'border border-solid border-black dark:border-gray-700'}`}>
       <Frame>
         <AppInput />
       </Frame>

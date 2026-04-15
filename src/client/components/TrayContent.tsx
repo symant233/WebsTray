@@ -26,11 +26,12 @@ export default function TrayContent({ url }: Props) {
   const [title, setTitle] = useState(url);
   const containerRef = useRef<HTMLDivElement>(null);
 
+  const isMac = window.electron.isMac;
+
   const current: IData = useDataStore((state) => state.getData(url));
   const updater = useDataStore((state) => state.updater);
   const globalTheme = useDataStore((state) => state.config.theme);
 
-  // Use per-page theme if set, otherwise use global theme
   const effectiveTheme = current?.theme || globalTheme;
   useTheme(effectiveTheme);
 
@@ -77,12 +78,13 @@ export default function TrayContent({ url }: Props) {
   }, []);
 
   useEffect(() => {
+    const pseudoClass = isMac ? 'before:invisible' : 'after:invisible';
     const listener = () => {
       const showTriangle = trayWindowBounds.width >= window.innerWidth - 10;
       if (showTriangle) {
-        containerRef.current?.classList.remove('after:invisible');
+        containerRef.current?.classList.remove(pseudoClass);
       } else {
-        containerRef.current?.classList.add('after:invisible');
+        containerRef.current?.classList.add(pseudoClass);
       }
       updater(url, {
         bounds: { width: window.innerWidth, height: window.innerHeight },
@@ -94,31 +96,40 @@ export default function TrayContent({ url }: Props) {
     };
   }, []);
 
+  const triangleWin =
+    "after:content-[''] after:absolute after:-bottom-[9px] after:left-1/2 after:-translate-x-1/2 after:w-4 after:h-4 after:bg-gray-100 dark:after:bg-neutral-900 after:border-r after:border-b after:border-gray-200 dark:after:border-neutral-700 after:rotate-45";
+  const triangleMac =
+    "before:content-[''] before:absolute before:-top-[9px] before:left-1/2 before:-translate-x-1/2 before:w-4 before:h-4 before:bg-gray-100 dark:before:bg-neutral-900 before:border-l before:border-t before:border-gray-200 dark:before:border-neutral-700 before:rotate-45";
+
+  const controlBar = (
+    <div className={`select-none ${isMac ? 'pb-1' : 'pt-1'} text-sm text-gray-600 dark:text-neutral-300 whitespace-nowrap w-full flex flex-row items-center transition-colors`}>
+      <BackButton onClick={() => webview.current.goBack()} />
+      <span className="overflow-hidden text-ellipsis pr-1 app-drag">
+        {title}
+      </span>
+      <DevLabel />
+      <div className="flex-1 p-0.5 min-h-5 app-drag"></div>
+      <ThemeToggle theme={effectiveTheme} onToggle={handleThemeToggle} />
+      <DevtoolButton onClick={() => webview.current.openDevTools()} />
+      <HomeButton />
+      <RefreshButton onClick={() => webview.current.reload()} />
+      <CloseButton />
+    </div>
+  );
+
   return (
-    <div className="w-screen h-screen p-1 pb-3 bg-transparent">
+    <div className={`w-screen h-screen p-1 ${isMac ? 'pt-3' : 'pb-3'} bg-transparent`}>
       <div
-        className="w-full h-full bg-gray-100 dark:bg-neutral-900 drop-shadow-md border border-solid border-gray-200 dark:border-neutral-700 p-2 pb-8 rounded-lg relative after:content-[''] after:absolute after:-bottom-[9px] after:left-1/2 after:-translate-x-1/2 after:w-4 after:h-4 after:bg-gray-100 dark:after:bg-neutral-900 after:border-r after:border-b after:border-gray-200 dark:after:border-neutral-700 after:rotate-45 transition-colors"
+        className={`w-full h-full bg-gray-100 dark:bg-neutral-900 drop-shadow-md border border-solid border-gray-200 dark:border-neutral-700 p-2 ${isMac ? '' : 'pb-8'} rounded-lg relative ${isMac ? triangleMac : triangleWin} transition-colors flex flex-col`}
         ref={containerRef}
       >
+        {isMac && controlBar}
         <webview
-          // disablewebsecurity
           ref={webview}
           src={url}
-          className="w-full h-full rounded-lg border border-solid border-gray-300 dark:border-neutral-800 shadow"
+          className="w-full flex-1 rounded-lg border border-solid border-gray-300 dark:border-neutral-800 shadow"
         ></webview>
-        <div className="select-none pt-1 text-sm text-gray-600 dark:text-neutral-300 whitespace-nowrap w-full flex flex-row items-center transition-colors">
-          <BackButton onClick={() => webview.current.goBack()} />
-          <span className="overflow-hidden text-ellipsis pr-1 app-drag">
-            {title}
-          </span>
-          <DevLabel />
-          <div className="flex-1 p-0.5 min-h-5 app-drag"></div>
-          <ThemeToggle theme={effectiveTheme} onToggle={handleThemeToggle} />
-          <DevtoolButton onClick={() => webview.current.openDevTools()} />
-          <HomeButton />
-          <RefreshButton onClick={() => webview.current.reload()} />
-          <CloseButton />
-        </div>
+        {!isMac && controlBar}
       </div>
     </div>
   );
