@@ -2,13 +2,14 @@ import { app, BrowserWindow, nativeImage } from 'electron';
 import { createWindow } from './main-process/window';
 import session from './main-process/session';
 import { getPublicAsset } from './main-process/helper';
+import squirrelStartup from 'electron-squirrel-startup';
+
+// Handle Squirrel events on Windows (installer/uninstaller lifecycle)
+if (squirrelStartup) {
+  app.quit();
+}
 
 if (process.platform === 'win32') {
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const squirrelStartup = require('electron-squirrel-startup');
-  if (squirrelStartup) {
-    app.quit();
-  }
   app.commandLine.appendSwitch('wm-window-animations-disabled');
 }
 
