@@ -9,9 +9,12 @@ import {
 } from './helper';
 import ipcListener, { trayIpcListener } from './ipcListener';
 import { mainWindowBounds, trayWindowBounds } from './constant';
+import { applyWebPreferences } from './session';
+import type { PageWebPreferences } from '@/shared/webPreferences';
 
 let mainWindowInstance: BrowserWindow | null;
 const trayMapper = new Map<string, [BrowserWindow, Tray]>();
+const preferencesMapper = new Map<string, PageWebPreferences>();
 
 const appIcon = nativeImage.createFromPath(getPublicAsset('WebsTray.png'));
 // macOS menu bar icons should be ~18px to match system icon sizes
@@ -67,14 +70,27 @@ const createWindow = async (): Promise<BrowserWindow> => {
 
 const createTrayWindow = async (
   url: string,
+  preferences: PageWebPreferences,
 ): Promise<[BrowserWindow, Tray]> => {
   const mapper = trayMapper.get(url);
   if (mapper) {
     const [trayWindow, tray] = mapper;
+    const previousPreferences = preferencesMapper.get(url);
+    const preferencesChanged =
+      previousPreferences?.proxy !== preferences.proxy ||
+      previousPreferences?.userAgent !== preferences.userAgent;
+    if (preferencesChanged) {
+      await applyWebPreferences(url, preferences);
+      preferencesMapper.set(url, preferences);
+      trayWindow.webContents.send('reload-tray-webview');
+    }
     setTrayWindowPosition(trayWindow, tray);
     trayWindow.show();
     return mapper;
   }
+
+  await applyWebPreferences(url, preferences);
+  preferencesMapper.set(url, preferences);
 
   const tray = new Tray(trayIcon);
   const trayWindow = new BrowserWindow({
@@ -96,6 +112,7 @@ const createTrayWindow = async (
     remover();
     tray.destroy();
     trayMapper.delete(url);
+    preferencesMapper.delete(url);
   });
 
   const contextMenu = Menu.buildFromTemplate([
@@ -117,7 +134,7 @@ const createTrayWindow = async (
     {
       label: 'Refresh',
       click: () => {
-        trayWindow.reload();
+        trayWindow.webContents.send('reload-tray-webview');
       },
     },
     {
@@ -182,4 +199,18 @@ const createTrayWindow = async (
   return [trayWindow, tray];
 };
 
-export { createWindow, createTrayWindow };
+const applyPagePreferences = async (
+  url: string,
+  preferences: PageWebPreferences,
+): Promise<void> => {
+  await applyWebPreferences(url, preferences);
+  preferencesMapper.set(url, preferences);
+
+  const mapper = trayMapper.get(url);
+  if (mapper) {
+    const [trayWindow] = mapper;
+    trayWindow.webContents.send('reload-tray-webview');
+  }
+};
+
+export { createWindow, createTrayWindow, applyPagePreferences };

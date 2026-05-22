@@ -5,37 +5,46 @@ import {
   nativeImage,
   Tray,
   shell,
-  session,
 } from 'electron';
-import { createTrayWindow } from './window';
+import { applyPagePreferences, createTrayWindow } from './window';
 import { isMac } from './helper';
+import { setProxy, setUserAgent } from './session';
+import type {
+  PageWebPreferences,
+  ProxySetting,
+  UserAgentType,
+} from '@/shared/webPreferences';
 
 const ipcListener = (window: BrowserWindow): (() => void) => {
   ipcMain.on('minimize-window', () => {
     window.minimize();
   });
-  ipcMain.on('open-window', (_, url: string) => {
-    return createTrayWindow(url);
+  ipcMain.on(
+    'open-window',
+    (_, url: string, preferences: PageWebPreferences) => {
+      return createTrayWindow(url, preferences);
+    },
+  );
+  ipcMain.on('set-proxy', (_, proxy: ProxySetting, partition?: string) => {
+    void setProxy(proxy, partition);
   });
+  ipcMain.on(
+    'set-user-agent',
+    (_, userAgentType: UserAgentType, partition?: string) => {
+      setUserAgent(userAgentType, partition);
+    },
+  );
+  ipcMain.on(
+    'apply-page-preferences',
+    (_, url: string, preferences: PageWebPreferences) => {
+      void applyPagePreferences(url, preferences);
+    },
+  );
   ipcMain.on('reload-window', () => {
     window.reload();
   });
   ipcMain.on('open-external', (_, url: string) => {
     shell.openExternal(url);
-  });
-  ipcMain.on('set-proxy', (_, proxy: string) => {
-    if (proxy === 'system') {
-      session.defaultSession.setProxy({
-        mode: proxy,
-        proxyBypassRules: 'localhost',
-      });
-    } else {
-      session.defaultSession.setProxy({
-        proxyRules: proxy,
-        proxyBypassRules: 'localhost',
-      });
-    }
-    console.log(`[ipcListener.ts]: setting proxy ${proxy}`);
   });
 
   return () => {
@@ -44,6 +53,8 @@ const ipcListener = (window: BrowserWindow): (() => void) => {
     ipcMain.removeAllListeners('reload-window');
     ipcMain.removeAllListeners('open-external');
     ipcMain.removeAllListeners('set-proxy');
+    ipcMain.removeAllListeners('set-user-agent');
+    ipcMain.removeAllListeners('apply-page-preferences');
   };
   // * required to update preload.ts after modification
 };

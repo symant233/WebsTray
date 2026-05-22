@@ -1,3 +1,11 @@
+import type { ProxySetting, UserAgentType } from '@/shared/webPreferences';
+
+export type {
+  PageWebPreferences,
+  ProxySetting,
+  UserAgentType,
+} from '@/shared/webPreferences';
+
 export type ThemeMode = 'light' | 'dark' | 'system';
 
 export type IData = {
@@ -22,4 +30,8 @@ export type IData = {
   };
   /** per-page theme override */
   theme?: ThemeMode;
+  /** per-page proxy override; undefined uses global setting */
+  proxy?: ProxySetting;
+  /** per-page user agent override; undefined uses global setting */
+  userAgent?: UserAgentType;
 };

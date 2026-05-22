@@ -6,8 +6,48 @@
     <title>WebsTray</title>
     <meta
       http-equiv="Content-Security-Policy"
-      content="default-src *; style-src 'self' 'unsafe-inline'; frame-src *; img-src * data:;"
+      content="default-src *; script-src * 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; frame-src *; img-src * data:;"
     />
+    <script>
+      (function () {
+        try {
+          var raw = localStorage.getItem('webs-tray-storage');
+          if (!raw) return;
+          var parsed = JSON.parse(raw);
+          var state = parsed && parsed.state;
+          if (!state) return;
+
+          var globalTheme = (state.config && state.config.theme) || 'system';
+          var themeMode = globalTheme;
+
+          // For tray windows, resolve per-page theme override
+          var hash = location.hash;
+          if (hash) {
+            var pageUrl = hash.slice(1);
+            var pages = (state.favorite || []).concat(state.recent || []);
+            for (var i = 0; i < pages.length; i++) {
+              if (pages[i].url === pageUrl && pages[i].theme) {
+                themeMode = pages[i].theme;
+                break;
+              }
+            }
+          }
+
+          var isDark =
+            themeMode === 'dark' ||
+            (themeMode === 'system' &&
+              window.matchMedia('(prefers-color-scheme: dark)').matches);
+          if (isDark) document.documentElement.classList.add('dark');
+
+          var isTray = !!hash;
+          var bg = isTray ? 'transparent' : isDark ? '#111827' : '#ffffff';
+          var style = document.createElement('style');
+          style.textContent =
+            'html,body{margin:0;background-color:' + bg + ';}';
+          document.head.appendChild(style);
+        } catch (e) {}
+      })();
+    </script>
   </head>
   <body>
     <div id="app"></div>

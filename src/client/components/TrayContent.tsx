@@ -7,7 +7,7 @@ import {
   HomeButton,
   RefreshButton,
 } from './common/IconButtons';
-import manifestHelper from '@client/utils/manifestHelper';
+import { resolvePageIcons } from '@client/utils/manifestHelper';
 import useDataStore from '@client/hooks/useDataStore';
 import DevLabel from './common/DevLabel';
 import { convertImageToDataURL } from '@client/utils/imageConverter';
@@ -16,6 +16,7 @@ import { trayWindowBounds } from '@client/constant';
 import useWebview from '../hooks/useWebview';
 import ThemeToggle from './common/ThemeToggle';
 import { getNextThemeMode, useTheme } from '@client/hooks/useTheme';
+import { getWebviewPartition } from '@/shared/webPreferences';
 
 type Props = {
   url: string;
@@ -28,10 +29,13 @@ export default function TrayContent({ url }: Props) {
 
   const isMac = window.electron.isMac;
 
-  const current: IData = useDataStore((state) => state.getData(url));
+  const current: IData | undefined = useDataStore((state) =>
+    state.getData(url),
+  );
   const updater = useDataStore((state) => state.updater);
   const globalTheme = useDataStore((state) => state.config.theme);
 
+  const partition = getWebviewPartition(url);
   const effectiveTheme = current?.theme || globalTheme;
   useTheme(effectiveTheme);
 
@@ -40,41 +44,61 @@ export default function TrayContent({ url }: Props) {
     updater(url, { theme: nextTheme });
   };
 
+  async function applyTrayIcon(src: string) {
+    try {
+      // Prefer pre-inlined data URLs (already fetched via webview's session
+      // and rasterized to PNG); fall back to canvas conversion on the
+      // current renderer's session for plain URLs.
+      const base64 = src.startsWith('data:')
+        ? src
+        : await convertImageToDataURL(src);
+      window.electron.setTrayIcon(url, base64);
+    } catch (err) {
+      console.warn('TrayContent: failed to apply tray icon', err);
+    }
+  }
+
   async function handleManifest() {
     if (!webview.current) return;
     const webTitle = webview.current.getTitle();
     setTitle(webTitle);
-    // * start of manifest handler
-    const manifest = await webview.current.executeJavaScript(
-      `document.querySelector('link[rel="manifest"]')?.href;`,
-    );
-    const favicon = await webview.current.executeJavaScript(
-      `document.querySelector('link[rel*="icon"]')?.href;`,
-    );
+
     try {
-      let altIcon = current.altIcon;
-      if (!current.icon) {
-        const data = await manifestHelper(manifest);
+      if (!current?.icon) {
+        const manifestURL: string | null =
+          await webview.current.executeJavaScript(
+            `(document.querySelector('link[rel="manifest"]') || {}).href || null`,
+          );
+
+        const data = await resolvePageIcons(webview.current, manifestURL);
         if (!data.title) data.title = webTitle;
-        altIcon = data.altIcon;
-        updater(url, { manifest, ...data, favicon });
-      }
-      if (favicon || altIcon) {
-        const base64 = await convertImageToDataURL(favicon || altIcon);
-        window.electron.setTrayIcon(url, base64);
+        data.manifest = manifestURL ?? undefined;
+        updater(url, data);
+
+        const trayIconSrc = data.altIcon || data.icon || data.favicon;
+        if (trayIconSrc) await applyTrayIcon(trayIconSrc);
+      } else {
+        if (!current.title) updater(url, { title: webTitle });
+        const trayIconSrc = current.altIcon || current.icon || current.favicon;
+        if (trayIconSrc) await applyTrayIcon(trayIconSrc);
       }
     } catch (err) {
-      console.error('TrayContent', err);
+      console.error('TrayContent: handleManifest error', err);
     }
-    if (!current.icon) window.electron.reload();
   }
 
   useWebview(webview, handleManifest);
 
   useEffect(() => {
-    if (current.bounds) {
+    if (current?.bounds) {
       window.resizeTo(current.bounds.width, current.bounds.height);
     }
+  }, []);
+
+  useEffect(() => {
+    return window.electron.onReloadTrayWebview(() => {
+      webview.current?.reload();
+    });
   }, []);
 
   useEffect(() => {
@@ -102,23 +126,27 @@ export default function TrayContent({ url }: Props) {
     "before:content-[''] before:absolute before:-top-[9px] before:left-1/2 before:-translate-x-1/2 before:w-4 before:h-4 before:bg-gray-100 dark:before:bg-neutral-900 before:border-l before:border-t before:border-gray-200 dark:before:border-neutral-700 before:rotate-45";
 
   const controlBar = (
-    <div className={`select-none ${isMac ? 'pb-1' : 'pt-1'} text-sm text-gray-600 dark:text-neutral-300 whitespace-nowrap w-full flex flex-row items-center transition-colors`}>
-      <BackButton onClick={() => webview.current.goBack()} />
+    <div
+      className={`select-none ${isMac ? 'pb-1' : 'pt-1'} text-sm text-gray-600 dark:text-neutral-300 whitespace-nowrap w-full flex flex-row items-center transition-colors`}
+    >
+      <BackButton onClick={() => webview.current?.goBack()} />
       <span className="overflow-hidden text-ellipsis pr-1 app-drag">
         {title}
       </span>
       <DevLabel />
       <div className="flex-1 p-0.5 min-h-5 app-drag"></div>
       <ThemeToggle theme={effectiveTheme} onToggle={handleThemeToggle} />
-      <DevtoolButton onClick={() => webview.current.openDevTools()} />
-      <HomeButton />
-      <RefreshButton onClick={() => webview.current.reload()} />
+      <DevtoolButton onClick={() => webview.current?.openDevTools()} />
+      <HomeButton onClick={() => webview.current?.loadURL(url)} />
+      <RefreshButton onClick={() => webview.current?.reload()} />
       <CloseButton />
     </div>
   );
 
   return (
-    <div className={`w-screen h-screen p-1 ${isMac ? 'pt-3' : 'pb-3'} bg-transparent`}>
+    <div
+      className={`w-screen h-screen p-1 ${isMac ? 'pt-3' : 'pb-3'} bg-transparent`}
+    >
       <div
         className={`w-full h-full bg-gray-100 dark:bg-neutral-900 drop-shadow-md border border-solid border-gray-200 dark:border-neutral-700 p-2 rounded-lg relative ${isMac ? triangleMac : triangleWin} transition-colors flex flex-col`}
         ref={containerRef}
@@ -127,6 +155,7 @@ export default function TrayContent({ url }: Props) {
         <webview
           ref={webview}
           src={url}
+          partition={partition}
           className="w-full flex-1 rounded-lg border border-solid border-gray-300 dark:border-neutral-800 shadow"
         ></webview>
         {!isMac && controlBar}

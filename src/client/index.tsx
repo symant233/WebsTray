@@ -11,13 +11,16 @@ import useHotKey from './hooks/useHotkey';
 import { useTheme } from './hooks/useTheme';
 
 const App = () => {
-  const { proxy, theme: globalTheme } = useDataStore((state) => state.config);
+  const {
+    proxy,
+    theme: globalTheme,
+    userAgent,
+  } = useDataStore((state) => state.config);
 
   useEffect(() => {
-    if (proxy) {
-      window.electron.setProxy(proxy);
-    }
-  }, []);
+    window.electron.setProxy(proxy);
+    window.electron.setUserAgent(userAgent);
+  }, [proxy, userAgent]);
 
   if (location.hash) {
     return <TrayContent url={location.hash.slice(1)} />;

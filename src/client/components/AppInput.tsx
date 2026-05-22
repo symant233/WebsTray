@@ -8,14 +8,21 @@ import useDataStore from '@client/hooks/useDataStore';
 export default function AppInput() {
   const inputRef = useRef<HTMLInputElement>(null);
   const addRecent = useDataStore((state) => state.addRecent);
+  const config = useDataStore((state) => state.config);
 
   const handleEnter = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
-      const href = urlValidator(inputRef.current?.value);
+      const input = inputRef.current;
+      if (!input) return;
+
+      const href = urlValidator(input.value);
       if (href) {
-        addRecent({ url: href, hostname: getHostname(href) }); // add recent url
-        window.electron.openWindow(href);
-        inputRef.current.value = '';
+        addRecent({ url: href, hostname: getHostname(href) ?? undefined });
+        window.electron.openWindow(href, {
+          proxy: config.proxy,
+          userAgent: config.userAgent,
+        });
+        input.value = '';
       }
     }
   };
