@@ -9,6 +9,8 @@ import {
 } from 'electron';
 import { createTrayWindow } from './window';
 import { isMac } from './helper';
+import { setUserAgent } from './session';
+import type { UserAgentType } from './helper';
 
 const ipcListener = (window: BrowserWindow): (() => void) => {
   ipcMain.on('minimize-window', () => {
@@ -37,6 +39,9 @@ const ipcListener = (window: BrowserWindow): (() => void) => {
     }
     console.log(`[ipcListener.ts]: setting proxy ${proxy}`);
   });
+  ipcMain.on('set-user-agent', (_, userAgentType: UserAgentType) => {
+    setUserAgent(userAgentType);
+  });
 
   return () => {
     ipcMain.removeAllListeners('minimize-window');
@@ -44,6 +49,7 @@ const ipcListener = (window: BrowserWindow): (() => void) => {
     ipcMain.removeAllListeners('reload-window');
     ipcMain.removeAllListeners('open-external');
     ipcMain.removeAllListeners('set-proxy');
+    ipcMain.removeAllListeners('set-user-agent');
   };
   // * required to update preload.ts after modification
 };

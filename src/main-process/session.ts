@@ -1,9 +1,21 @@
 import { session } from 'electron';
-import { userAgent } from './helper';
+import { getUserAgent, type UserAgentType } from './helper';
+
+let currentUserAgent: string | null = null;
+
+export function setUserAgent(type: UserAgentType) {
+  currentUserAgent = getUserAgent(type);
+  console.log(
+    `[session.ts]: setting user agent to ${type}`,
+    currentUserAgent || 'Electron default',
+  );
+}
 
 export default function sessionHandler() {
   session.defaultSession.webRequest.onBeforeSendHeaders((details, callback) => {
-    details.requestHeaders['User-Agent'] = userAgent;
+    if (currentUserAgent) {
+      details.requestHeaders['User-Agent'] = currentUserAgent;
+    }
     callback({ requestHeaders: details.requestHeaders });
   });
 
