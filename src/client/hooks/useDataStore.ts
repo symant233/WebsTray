@@ -1,25 +1,24 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import type { IData, ThemeMode } from '@client/types';
-
-export type UserAgentType = 'electron' | 'pc' | 'android' | 'ios';
+import type { IData, ProxySetting, ThemeMode, UserAgentType } from '@client/types';
+import { DEFAULT_PROXY, DEFAULT_USER_AGENT } from '@/shared/webPreferences';
 
 export type IConfig = {
-  proxy: '' | 'system' | string;
+  proxy: ProxySetting;
   theme: ThemeMode;
   userAgent: UserAgentType;
 };
 
 const initialConfig: IConfig = {
-  proxy: '',
+  proxy: DEFAULT_PROXY,
   theme: 'system',
-  userAgent: 'electron',
+  userAgent: DEFAULT_USER_AGENT,
 };
 
 interface State {
   recent: IData[];
   favorite: IData[];
-  getData: (url: string) => IData;
+  getData: (url: string) => IData | undefined;
   getAllData: () => IData[];
   addRecent: (value: IData) => void;
   addFavorite: (value: IData) => void;
@@ -29,6 +28,8 @@ interface State {
   config: IConfig;
   setConfig: (value: IConfig) => void;
 }
+
+const STORAGE_KEY = 'webs-tray-storage';
 
 const useDataStore = create<State>()(
   persist(
@@ -84,7 +85,7 @@ const useDataStore = create<State>()(
       },
     }),
     {
-      name: 'webs-tray-storage',
+      name: STORAGE_KEY,
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
         recent: state.recent,
@@ -94,5 +95,12 @@ const useDataStore = create<State>()(
     },
   ),
 );
+
+if (typeof window !== 'undefined') {
+  window.addEventListener('storage', (event) => {
+    if (event.key !== STORAGE_KEY) return;
+    void useDataStore.persist.rehydrate();
+  });
+}
 
 export default useDataStore;

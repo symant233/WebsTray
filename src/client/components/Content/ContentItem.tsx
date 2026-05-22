@@ -1,12 +1,14 @@
 import getHostname from '@client/utils/getHostname';
 import LazyImage from '@client/components/common/LazyImage';
 import type { IData } from '@client/types';
+import useDataStore from '@client/hooks/useDataStore';
 
 export type IContentItemProps = {
   item: IData;
 };
 
 export default function ContentItem({ item }: IContentItemProps) {
+  const config = useDataStore((state) => state.config);
   const hostname = getHostname(item.url);
   const iconURL =
     item?.icon ||
@@ -17,7 +19,12 @@ export default function ContentItem({ item }: IContentItemProps) {
   return (
     <div
       className="hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg flex flex-col items-center justify-center p-4 gap-2 cursor-pointer active:bg-gray-200 dark:active:bg-gray-600 transition-colors"
-      onClick={() => window.electron.openWindow(item.url)}
+      onClick={() =>
+        window.electron.openWindow(item.url, {
+          proxy: item.proxy ?? config.proxy,
+          userAgent: item.userAgent ?? config.userAgent,
+        })
+      }
     >
       <LazyImage src={iconURL} width={64} height={64} className="rounded-lg" />
       <span className="w-20 overflow-hidden overflow-ellipsis text-nowrap whitespace-nowrap text-center dark:text-gray-200">

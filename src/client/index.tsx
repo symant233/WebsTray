@@ -18,13 +18,9 @@ const App = () => {
   } = useDataStore((state) => state.config);
 
   useEffect(() => {
-    if (proxy) {
-      window.electron.setProxy(proxy);
-    }
-    if (userAgent) {
-      window.electron.setUserAgent(userAgent);
-    }
-  }, []);
+    window.electron.setProxy(proxy);
+    window.electron.setUserAgent(userAgent);
+  }, [proxy, userAgent]);
 
   if (location.hash) {
     return <TrayContent url={location.hash.slice(1)} />;

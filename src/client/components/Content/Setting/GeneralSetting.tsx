@@ -17,7 +17,7 @@ const GeneralSetting: FC<Props> = ({ config, setConfig }) => {
         <div className="font-bold before:content-['#'] before:pr-2 dark:text-white">
           User Agent&nbsp;
           <span className="text-gray-500 dark:text-neutral-400 text-sm">
-            (restart to apply)
+            (default for pages without override)
           </span>
         </div>
         <div>
@@ -82,7 +82,7 @@ const GeneralSetting: FC<Props> = ({ config, setConfig }) => {
         <div className="font-bold before:content-['#'] before:pr-2 dark:text-white">
           Proxy Setting&nbsp;
           <span className="text-gray-500 dark:text-neutral-400 text-sm">
-            (restart to apply)
+            (default for pages without override)
           </span>
         </div>
         <div>

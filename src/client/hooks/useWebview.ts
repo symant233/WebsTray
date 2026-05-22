@@ -8,7 +8,7 @@ import { useEffect, type RefObject } from 'react';
  * @returns {void}
  */
 export default function useWebview(
-  webview: RefObject<Electron.WebviewTag>,
+  webview: RefObject<Electron.WebviewTag | null>,
   callback: () => void,
 ): void {
   useEffect(() => {

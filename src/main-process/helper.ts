@@ -1,6 +1,7 @@
 import type Electron from 'electron';
 import { app, BrowserWindow, Tray, screen } from 'electron';
 import path from 'path';
+import type { UserAgentType } from '@/shared/webPreferences';
 
 export function isCursorInside(
   point: Electron.Point,
@@ -23,8 +24,6 @@ export function getPublicAsset(file: string) {
 }
 
 export const isMac = process.platform === 'darwin';
-
-export type UserAgentType = 'electron' | 'pc' | 'android' | 'ios';
 
 // User Agent 字符串映射
 const userAgentMap: Record<UserAgentType, string | null> = {

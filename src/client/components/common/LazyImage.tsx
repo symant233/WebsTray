@@ -17,13 +17,21 @@ export default function LazyImage({
   const [source, setSource] = useState(appIconBase64);
 
   useEffect(() => {
+    let cancelled = false;
     const onlineImg = document.createElement('img');
     onlineImg.src = src;
 
     onlineImg.onload = () => {
-      setSource(src);
+      if (!cancelled) setSource(src);
     };
-  }, []);
+    onlineImg.onerror = () => {
+      if (!cancelled) setSource(appIconBase64);
+    };
+
+    return () => {
+      cancelled = true;
+    };
+  }, [src]);
 
   return (
     <img
