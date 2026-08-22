@@ -13,7 +13,9 @@ export default function useWebview(
 ): void {
   useEffect(() => {
     const element = webview.current;
-    if (!element) return;
+    if (!element) {
+      return;
+    }
 
     const handleWillNavigate = (event: Electron.Event & { url: string }) => {
       event.preventDefault();

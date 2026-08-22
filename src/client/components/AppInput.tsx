@@ -12,17 +12,18 @@ export default function AppInput() {
 
   const handleEnter = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
-      const input = inputRef.current;
-      if (!input) return;
-
-      const href = urlValidator(input.value);
+      const inputEl = inputRef.current;
+      if (!inputEl) {
+        return;
+      }
+      const href = urlValidator(inputEl.value);
       if (href) {
-        addRecent({ url: href, hostname: getHostname(href) ?? undefined });
+        addRecent({ url: href, hostname: getHostname(href) });
         window.electron.openWindow(href, {
           proxy: config.proxy,
           userAgent: config.userAgent,
         });
-        input.value = '';
+        inputEl.value = '';
       }
     }
   };

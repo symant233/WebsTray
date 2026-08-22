@@ -11,7 +11,6 @@ import { resolvePageIcons } from '@client/utils/manifestHelper';
 import useDataStore from '@client/hooks/useDataStore';
 import DevLabel from './common/DevLabel';
 import { convertImageToDataURL } from '@client/utils/imageConverter';
-import type { IData } from '@client/types';
 import { trayWindowBounds } from '@client/constant';
 import useWebview from '../hooks/useWebview';
 import ThemeToggle from './common/ThemeToggle';
@@ -29,9 +28,7 @@ export default function TrayContent({ url }: Props) {
 
   const isMac = window.electron.isMac;
 
-  const current: IData | undefined = useDataStore((state) =>
-    state.getData(url),
-  );
+  const current = useDataStore((state) => state.getData(url));
   const updater = useDataStore((state) => state.updater);
   const globalTheme = useDataStore((state) => state.config.theme);
 
@@ -59,7 +56,9 @@ export default function TrayContent({ url }: Props) {
   }
 
   async function handleManifest() {
-    if (!webview.current) return;
+    if (!webview.current) {
+      return;
+    }
     const webTitle = webview.current.getTitle();
     setTitle(webTitle);
 
@@ -71,34 +70,45 @@ export default function TrayContent({ url }: Props) {
           );
 
         const data = await resolvePageIcons(webview.current, manifestURL);
-        if (!data.title) data.title = webTitle;
+        if (!data.title) {
+          data.title = webTitle;
+        }
         data.manifest = manifestURL ?? undefined;
         updater(url, data);
 
         const trayIconSrc = data.altIcon || data.icon || data.favicon;
-        if (trayIconSrc) await applyTrayIcon(trayIconSrc);
+        if (trayIconSrc) {
+          await applyTrayIcon(trayIconSrc);
+        }
       } else {
-        if (!current.title) updater(url, { title: webTitle });
+        if (!current.title) {
+          updater(url, { title: webTitle });
+        }
         const trayIconSrc = current.altIcon || current.icon || current.favicon;
-        if (trayIconSrc) await applyTrayIcon(trayIconSrc);
+        if (trayIconSrc) {
+          await applyTrayIcon(trayIconSrc);
+        }
       }
     } catch (err) {
       console.error('TrayContent: handleManifest error', err);
     }
   }
 
+  const handleReloadWebview = () => {
+    webview.current?.reload();
+  };
+
   useWebview(webview, handleManifest);
 
   useEffect(() => {
-    if (current?.bounds) {
-      window.resizeTo(current.bounds.width, current.bounds.height);
+    const bounds = current?.bounds;
+    if (bounds) {
+      window.resizeTo(bounds.width, bounds.height);
     }
   }, []);
 
   useEffect(() => {
-    return window.electron.onReloadTrayWebview(() => {
-      webview.current?.reload();
-    });
+    return window.electron.onReloadTrayWebview(handleReloadWebview);
   }, []);
 
   useEffect(() => {
@@ -120,6 +130,18 @@ export default function TrayContent({ url }: Props) {
     };
   }, []);
 
+  const handleGoBack = () => {
+    webview.current?.goBack();
+  };
+
+  const handleOpenDevTools = () => {
+    webview.current?.openDevTools();
+  };
+
+  const handleLoadHome = () => {
+    webview.current?.loadURL(url);
+  };
+
   const triangleWin =
     "after:content-[''] after:absolute after:-bottom-[9px] after:left-1/2 after:-translate-x-1/2 after:w-4 after:h-4 after:bg-gray-100 dark:after:bg-neutral-900 after:border-r after:border-b after:border-gray-200 dark:after:border-neutral-700 after:rotate-45";
   const triangleMac =
@@ -129,16 +151,16 @@ export default function TrayContent({ url }: Props) {
     <div
       className={`select-none ${isMac ? 'pb-1' : 'pt-1'} text-sm text-gray-600 dark:text-neutral-300 whitespace-nowrap w-full flex flex-row items-center transition-colors`}
     >
-      <BackButton onClick={() => webview.current?.goBack()} />
+      <BackButton onClick={handleGoBack} />
       <span className="overflow-hidden text-ellipsis pr-1 app-drag">
         {title}
       </span>
       <DevLabel />
       <div className="flex-1 p-0.5 min-h-5 app-drag"></div>
       <ThemeToggle theme={effectiveTheme} onToggle={handleThemeToggle} />
-      <DevtoolButton onClick={() => webview.current?.openDevTools()} />
-      <HomeButton onClick={() => webview.current?.loadURL(url)} />
-      <RefreshButton onClick={() => webview.current?.reload()} />
+      <DevtoolButton onClick={handleOpenDevTools} />
+      <HomeButton onClick={handleLoadHome} />
+      <RefreshButton onClick={handleReloadWebview} />
       <CloseButton />
     </div>
   );

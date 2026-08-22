@@ -1,8 +1,8 @@
-export default function getHostname(url: string): string | null {
+export default function getHostname(url: string): string | undefined {
   try {
     const { hostname } = new URL(url);
     return hostname;
-  } catch (_) {
-    return null;
+  } catch {
+    return undefined;
   }
 }

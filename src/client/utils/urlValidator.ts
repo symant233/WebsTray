@@ -1,4 +1,7 @@
-const urlValidator = (url: string): string | null => {
+const urlValidator = (url?: string): string | null => {
+  if (!url) {
+    return null;
+  }
   const regex = new RegExp(
     '^(https?:\\/\\/)?' + // 可选的协议头
       '([a-zA-Z0-9-]+\\.)+' + // 至少一个域名部分，且包含'.'
